@@ -1,113 +1,107 @@
 "use client";
 
-import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 export default function CustomCursor() {
-  // Exact position for the small dot
-  const dotX = useMotionValue(-100);
-  const dotY = useMotionValue(-100);
-
-  // Raw position values fed into springs for the ring
-  const rawX = useMotionValue(-100);
-  const rawY = useMotionValue(-100);
-  const ringX = useSpring(rawX, { stiffness: 150, damping: 15, mass: 0.8 });
-  const ringY = useSpring(rawY, { stiffness: 150, damping: 15, mass: 0.8 });
-
-  const [hovered, setHovered] = useState(false);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const pos = useRef({ x: -100, y: -100 });
+  const ring = useRef({ x: -100, y: -100 });
   const rafRef = useRef<number | null>(null);
-  const posRef = useRef({ x: -100, y: -100 });
+  const [hovered, setHovered] = useState(false);
+  const hoveredRef = useRef(false);
 
   useEffect(() => {
-    document.body.style.cursor = "none";
-
     const onMove = (e: MouseEvent) => {
-      posRef.current = { x: e.clientX, y: e.clientY };
+      pos.current = { x: e.clientX, y: e.clientY };
     };
 
-    const isInteractive = (el: EventTarget | null): boolean => {
-      if (!el || !(el instanceof HTMLElement)) return false;
-      return !!(
+    const onOver = (e: MouseEvent) => {
+      const el = e.target as HTMLElement;
+      const interactive = !!(
         el.closest("a") ||
         el.closest("button") ||
         el.closest("[role='button']") ||
-        el.closest("[data-cursor-hover]")
+        el.closest("input") ||
+        el.closest("textarea") ||
+        el.closest("select")
       );
+      if (interactive !== hoveredRef.current) {
+        hoveredRef.current = interactive;
+        setHovered(interactive);
+      }
     };
 
-    const onMouseOver = (e: MouseEvent) => {
-      if (isInteractive(e.target)) setHovered(true);
-    };
-    const onMouseOut = (e: MouseEvent) => {
-      if (isInteractive(e.target)) setHovered(false);
-    };
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
     const tick = () => {
-      dotX.set(posRef.current.x);
-      dotY.set(posRef.current.y);
-      rawX.set(posRef.current.x);
-      rawY.set(posRef.current.y);
+      const dot = dotRef.current;
+      const ringEl = ringRef.current;
+
+      if (dot) {
+        dot.style.transform = `translate(${pos.current.x - 3}px, ${pos.current.y - 3}px)`;
+      }
+
+      if (ringEl) {
+        ring.current.x = lerp(ring.current.x, pos.current.x, 0.12);
+        ring.current.y = lerp(ring.current.y, pos.current.y, 0.12);
+        const size = hoveredRef.current ? 44 : 28;
+        ringEl.style.transform = `translate(${ring.current.x - size / 2}px, ${ring.current.y - size / 2}px)`;
+        ringEl.style.width = `${size}px`;
+        ringEl.style.height = `${size}px`;
+      }
+
       rafRef.current = requestAnimationFrame(tick);
     };
 
-    window.addEventListener("mousemove", onMove, { passive: true });
-    window.addEventListener("mouseover", onMouseOver, { passive: true });
-    window.addEventListener("mouseout", onMouseOut, { passive: true });
     rafRef.current = requestAnimationFrame(tick);
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mouseover", onOver, { passive: true });
 
     return () => {
-      document.body.style.cursor = "";
       window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseover", onMouseOver);
-      window.removeEventListener("mouseout", onMouseOut);
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("mouseover", onOver);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [dotX, dotY, rawX, rawY]);
+  }, []);
 
   return (
     <>
-      {/* Small white dot — exact tracking */}
-      <motion.div
+      {/* Inner dot — instant */}
+      <div
+        ref={dotRef}
         style={{
           position: "fixed",
           top: 0,
           left: 0,
-          x: dotX,
-          y: dotY,
           width: 6,
           height: 6,
           borderRadius: "50%",
           backgroundColor: "#FFFFFF",
-          translateX: "-50%",
-          translateY: "-50%",
           zIndex: 9999,
           pointerEvents: "none",
+          willChange: "transform",
         }}
       />
 
-      {/* Lagging ring with spring physics */}
-      <motion.div
+      {/* Outer ring — lerp lag */}
+      <div
+        ref={ringRef}
         style={{
           position: "fixed",
           top: 0,
           left: 0,
-          x: ringX,
-          y: ringY,
-          translateX: "-50%",
-          translateY: "-50%",
+          width: 28,
+          height: 28,
+          borderRadius: "50%",
+          border: `1.5px solid #00D4FF`,
+          backgroundColor: hovered ? "rgba(0,212,255,0.15)" : "transparent",
+          boxShadow: "0 0 8px rgba(0,212,255,0.4)",
           zIndex: 9998,
           pointerEvents: "none",
-          borderRadius: "50%",
-          borderStyle: "solid",
+          willChange: "transform",
+          transition: "background-color 0.2s ease, width 0.2s ease, height 0.2s ease",
         }}
-        animate={{
-          width: hovered ? 48 : 32,
-          height: hovered ? 48 : 32,
-          borderWidth: 1.5,
-          borderColor: "#00D4FF",
-          backgroundColor: hovered ? "rgba(0,212,255,0.14)" : "rgba(0,212,255,0)",
-        }}
-        transition={{ type: "spring", stiffness: 200, damping: 20 }}
       />
     </>
   );
