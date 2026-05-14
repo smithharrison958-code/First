@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
+import Image from 'next/image'
 
 /* ─────────────────────────────────────────────
    Types
@@ -104,10 +105,12 @@ function StatCard({ stat, index, sectionActive }: { stat: StatItem; index: numbe
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const leftRef = useRef<HTMLDivElement>(null)
+  const accentRef = useRef<HTMLDivElement>(null)
   const rightRef = useRef<HTMLDivElement>(null)
   const statsRef = useRef<HTMLDivElement>(null)
 
   const leftInView = useInView(leftRef, { once: true, amount: 0.3 })
+  const accentInView = useInView(accentRef, { once: true, amount: 0.3 })
   const rightInView = useInView(rightRef, { once: true, amount: 0.3 })
   const statsInView = useInView(statsRef, { once: true, amount: 0.3 })
 
@@ -130,25 +133,48 @@ export default function AboutSection() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
         {/* ── Two-column layout ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
-          {/* ── LEFT: Athlete portrait placeholder ── */}
-          <motion.div
-            ref={leftRef}
-            initial={{ opacity: 0, x: -56 }}
-            animate={leftInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -56 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="relative"
-          >
-            {/* Portrait area */}
-            <div
-              className="relative w-full aspect-[3/4] overflow-hidden"
+          {/* ── LEFT: Real photo column ── */}
+          <div className="relative">
+            {/* Primary portrait */}
+            <motion.div
+              ref={leftRef}
+              initial={{ opacity: 0, x: -56 }}
+              animate={leftInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -56 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full overflow-hidden lg:h-[600px] aspect-[3/4] lg:aspect-auto"
               style={{ backgroundColor: '#0D0D14' }}
             >
+              {/* Actual photo with slow zoom-in reveal */}
+              <motion.div
+                className="absolute inset-0"
+                initial={{ scale: 1.08 }}
+                animate={leftInView ? { scale: 1.0 } : { scale: 1.08 }}
+                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <Image
+                  src="/images/dillon-headshot.jpg"
+                  fill
+                  alt="Dillon Smith — Corpus Christi Islanders athlete portrait"
+                  style={{ objectFit: 'cover', objectPosition: 'top center' }}
+                />
+              </motion.div>
+
+              {/* Bottom gradient overlay */}
+              <div
+                aria-hidden
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    'linear-gradient(to top, rgba(5,5,5,0.9) 0%, rgba(5,5,5,0.4) 40%, transparent 70%)',
+                }}
+              />
+
               {/* Corner accents — top-left */}
               <span
                 aria-hidden
-                className="absolute top-0 left-0 pointer-events-none"
+                className="absolute pointer-events-none"
                 style={{
                   width: '40px',
                   height: '1px',
@@ -193,52 +219,60 @@ export default function AboutSection() {
                 }}
               />
 
-              {/* Large DS monogram */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span
-                  aria-hidden
-                  className="font-bold select-none"
+              {/* Overlaid name text — slides up on reveal */}
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 px-6 pb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={leftInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <p
+                  className="font-bold leading-none mb-1"
                   style={{
                     fontFamily: 'var(--font-oswald), Impact, Arial Narrow, sans-serif',
-                    fontSize: 'clamp(5rem, 18vw, 12rem)',
-                    color: '#00D4FF',
-                    opacity: 0.08,
-                    letterSpacing: '-0.04em',
-                    lineHeight: 1,
+                    fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+                    color: '#ffffff',
+                    letterSpacing: '0.04em',
                   }}
                 >
-                  DS
-                </span>
-              </div>
+                  DILLON SMITH
+                </p>
+                <p
+                  className="text-xs tracking-widest font-medium uppercase"
+                  style={{ color: '#00D4FF', letterSpacing: '0.22em' }}
+                >
+                  800M · CORPUS CHRISTI UNIVERSITY
+                </p>
+              </motion.div>
+            </motion.div>
 
-              {/* Subtle inner gradient */}
+            {/* Secondary accent photo */}
+            <motion.div
+              ref={accentRef}
+              initial={{ opacity: 0, x: 40 }}
+              animate={accentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
+              transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="relative mt-4 ml-auto w-1/2 aspect-[3/4] overflow-hidden"
+              style={{
+                border: '1px solid rgba(0,212,255,0.25)',
+                boxShadow: '0 0 30px rgba(0,212,255,0.12), 0 0 60px rgba(0,212,255,0.06)',
+                backgroundColor: '#0D0D14',
+              }}
+            >
+              <Image
+                src="/images/dillon-studio-pointing.jpg"
+                fill
+                alt="Dillon Smith — studio portrait pointing at camera"
+                style={{ objectFit: 'cover', objectPosition: 'center top' }}
+              />
+              {/* Subtle dark tint to tie into dark theme */}
               <div
                 aria-hidden
                 className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    'radial-gradient(ellipse at 50% 30%, rgba(0,212,255,0.04) 0%, transparent 60%)',
-                }}
+                style={{ background: 'rgba(5,5,5,0.15)' }}
               />
-
-              {/* Stats bar at bottom of portrait */}
-              <div
-                className="absolute bottom-0 left-0 right-0 flex items-center justify-center py-3 px-4"
-                style={{
-                  backgroundColor: 'rgba(5,5,5,0.85)',
-                  backdropFilter: 'blur(8px)',
-                  borderTop: '1px solid rgba(0,212,255,0.2)',
-                }}
-              >
-                <span
-                  className="text-xs tracking-widest font-medium uppercase"
-                  style={{ color: '#C8C8D8', letterSpacing: '0.22em' }}
-                >
-                  800M &nbsp;|&nbsp; NCAA Div I &nbsp;|&nbsp; Corpus Christi
-                </span>
-              </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
 
           {/* ── RIGHT: Text content ── */}
           <motion.div

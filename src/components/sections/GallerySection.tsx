@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
+import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
 import type { Variants } from 'framer-motion'
 
@@ -10,11 +11,11 @@ import type { Variants } from 'framer-motion'
 
 interface GalleryItem {
   id: number
+  src: string
   label: string
   colSpan?: string
   rowSpan?: string
-  gradient: string
-  pattern: string
+  objectPosition?: string
 }
 
 /* ─────────────────────────────────────────────
@@ -22,45 +23,12 @@ interface GalleryItem {
 ───────────────────────────────────────────── */
 
 const GALLERY_ITEMS: GalleryItem[] = [
-  {
-    id: 1,
-    label: 'Race Start Position',
-    rowSpan: 'row-span-2',
-    gradient: 'linear-gradient(160deg, #0a0a1a 0%, #0d1b3e 40%, #061428 100%)',
-    pattern: 'radial-gradient(ellipse at 30% 70%, rgba(0,100,200,0.18) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(0,50,120,0.12) 0%, transparent 50%)',
-  },
-  {
-    id: 2,
-    label: 'Mid-Race Push',
-    gradient: 'linear-gradient(135deg, #080818 0%, #0f1f40 50%, #050d22 100%)',
-    pattern: 'radial-gradient(circle at 60% 40%, rgba(0,80,180,0.15) 0%, transparent 55%), radial-gradient(circle at 20% 80%, rgba(0,20,80,0.2) 0%, transparent 40%)',
-  },
-  {
-    id: 3,
-    label: 'Finish Line Sprint',
-    gradient: 'linear-gradient(200deg, #060616 0%, #0c1a38 60%, #040c20 100%)',
-    pattern: 'radial-gradient(ellipse at 50% 50%, rgba(0,60,160,0.2) 0%, transparent 65%), radial-gradient(ellipse at 90% 10%, rgba(0,30,100,0.15) 0%, transparent 45%)',
-  },
-  {
-    id: 4,
-    label: 'Conference Championship Victory',
-    colSpan: 'col-span-2',
-    gradient: 'linear-gradient(110deg, #09091c 0%, #112040 35%, #0d1830 70%, #060e20 100%)',
-    pattern: 'radial-gradient(ellipse at 25% 60%, rgba(0,90,200,0.18) 0%, transparent 55%), radial-gradient(ellipse at 75% 30%, rgba(0,50,140,0.14) 0%, transparent 50%), radial-gradient(circle at 50% 80%, rgba(0,20,80,0.1) 0%, transparent 40%)',
-  },
-  {
-    id: 5,
-    label: 'Training Track Session',
-    gradient: 'linear-gradient(170deg, #070715 0%, #0e1c3c 55%, #050c1e 100%)',
-    pattern: 'radial-gradient(circle at 40% 30%, rgba(0,70,170,0.16) 0%, transparent 50%), radial-gradient(ellipse at 70% 75%, rgba(0,40,120,0.12) 0%, transparent 45%)',
-  },
-  {
-    id: 6,
-    label: 'Pre-Race Focus',
-    rowSpan: 'row-span-2',
-    gradient: 'linear-gradient(145deg, #080818 0%, #101e42 45%, #060e28 100%)',
-    pattern: 'radial-gradient(ellipse at 60% 40%, rgba(0,80,190,0.2) 0%, transparent 60%), radial-gradient(ellipse at 20% 85%, rgba(0,30,100,0.15) 0%, transparent 40%)',
-  },
+  { id: 1, src: '/images/dillon-race.jpg',            label: 'Texas Relays · 800M',           rowSpan: 'row-span-2', objectPosition: 'center' },
+  { id: 2, src: '/images/dillon-studio-pointing.jpg', label: 'The Brand · 2026',                colSpan: '',           objectPosition: 'top center' },
+  { id: 3, src: '/images/dillon-headshot.jpg',        label: 'Portrait · Islanders',            colSpan: '',           objectPosition: 'top center' },
+  { id: 4, src: '/images/dillon-relay-team.jpg',      label: 'Texas Relays · 4×400 Relay',     colSpan: 'col-span-2', objectPosition: 'center' },
+  { id: 5, src: '/images/dillon-team-pyramid.jpg',    label: 'Islanders Track & Field',         colSpan: '',           objectPosition: 'center' },
+  { id: 6, src: '/images/dillon-studio-thumbsup.jpg', label: 'Ready · 2026 Season',             rowSpan: 'row-span-2', objectPosition: 'top center' },
 ]
 
 /* ─────────────────────────────────────────────
@@ -89,7 +57,7 @@ const headerVariants: Variants = {
 }
 
 /* ─────────────────────────────────────────────
-   GalleryItem Component
+   GalleryCard Component
 ───────────────────────────────────────────── */
 
 function GalleryCard({ item }: { item: GalleryItem }) {
@@ -98,53 +66,39 @@ function GalleryCard({ item }: { item: GalleryItem }) {
       variants={itemVariants}
       className={`relative overflow-hidden rounded-sm cursor-pointer group ${item.colSpan ?? ''} ${item.rowSpan ?? ''}`}
       style={{ minHeight: item.rowSpan ? '320px' : '200px' }}
-      whileHover={{ scale: 1.04, filter: 'brightness(1.1)' }}
+      whileHover={{ scale: 1.04 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
     >
-      {/* Background gradient */}
-      <div
-        className="absolute inset-0"
-        style={{ background: item.gradient }}
-      />
-      {/* Subtle pattern overlay */}
-      <div
-        className="absolute inset-0"
-        style={{ background: item.pattern }}
-      />
-
-      {/* Athletic grid lines — decorative */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
+      {/* Real photo */}
+      <Image
+        src={item.src}
+        alt={item.label}
+        fill
+        sizes="(max-width: 768px) 50vw, 33vw"
         style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, #fff 0px, #fff 1px, transparent 1px, transparent 40px)',
+          objectFit: 'cover',
+          objectPosition: item.objectPosition ?? 'center',
         }}
       />
 
-      {/* Diagonal speed-line accent */}
+      {/* Always-visible bottom gradient for label legibility */}
       <div
-        className="absolute inset-0 opacity-[0.06]"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'repeating-linear-gradient(65deg, transparent, transparent 18px, rgba(0,212,255,0.6) 18px, rgba(0,212,255,0.6) 19px)',
+          background: 'linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 40%, transparent 70%)',
         }}
       />
 
-      {/* Corner electric-blue accent */}
-      <div
-        className="absolute top-0 left-0 w-8 h-8 opacity-60"
-        style={{
-          background: 'linear-gradient(135deg, rgba(0,212,255,0.5) 0%, transparent 60%)',
-        }}
-      />
-
-      {/* Hover overlay */}
+      {/* Hover overlay — darken + blue border */}
       <motion.div
-        className="absolute inset-0 flex flex-col justify-center items-center"
+        className="absolute inset-0 flex flex-col justify-center items-center pointer-events-none"
         initial={{ opacity: 0 }}
         whileHover={{ opacity: 1 }}
         transition={{ duration: 0.25 }}
         style={{
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%)',
+          background: 'rgba(0,0,0,0.45)',
           border: '1px solid rgba(0,212,255,0.55)',
+          boxShadow: 'inset 0 0 32px rgba(0,212,255,0.06)',
         }}
       >
         <span
@@ -153,20 +107,50 @@ function GalleryCard({ item }: { item: GalleryItem }) {
         >
           View Photo
         </span>
-        <div
-          className="w-8 h-px"
-          style={{ background: '#00D4FF' }}
-        />
+        <div className="w-8 h-px" style={{ background: '#00D4FF' }} />
       </motion.div>
 
-      {/* Bottom label — always visible */}
-      <div
-        className="absolute bottom-0 left-0 right-0 px-3 py-2"
+      {/* Label text — always visible */}
+      <div className="absolute bottom-0 left-0 right-0 px-3 py-2 pointer-events-none">
+        <p className="text-xs tracking-wider uppercase text-gray-200 font-medium drop-shadow-md">
+          {item.label}
+        </p>
+      </div>
+    </motion.div>
+  )
+}
+
+/* ─────────────────────────────────────────────
+   Mobile Gallery Card (no row-span)
+───────────────────────────────────────────── */
+
+function MobileGalleryCard({ item }: { item: GalleryItem }) {
+  return (
+    <motion.div
+      variants={itemVariants}
+      className="relative overflow-hidden rounded-sm cursor-pointer"
+      style={{ minHeight: '140px' }}
+      whileHover={{ scale: 1.03 }}
+      transition={{ duration: 0.25 }}
+    >
+      <Image
+        src={item.src}
+        alt={item.label}
+        fill
+        sizes="50vw"
         style={{
-          background: 'linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%)',
+          objectFit: 'cover',
+          objectPosition: item.objectPosition ?? 'center',
         }}
-      >
-        <p className="text-xs tracking-wider uppercase text-gray-300 font-medium">
+      />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 45%, transparent 70%)',
+        }}
+      />
+      <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5 pointer-events-none">
+        <p className="text-[10px] tracking-wider uppercase text-gray-200 drop-shadow-md">
           {item.label}
         </p>
       </div>
@@ -206,6 +190,7 @@ export default function GallerySection() {
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
           variants={headerVariants}
+          transition={{ duration: 0.6 }}
         >
           <p
             className="text-xs tracking-widest uppercase mb-4 font-semibold"
@@ -250,29 +235,7 @@ export default function GallerySection() {
           variants={containerVariants}
         >
           {GALLERY_ITEMS.map((item) => (
-            <motion.div
-              key={item.id}
-              variants={itemVariants}
-              className="relative overflow-hidden rounded-sm cursor-pointer group"
-              style={{ minHeight: '140px' }}
-              whileHover={{ scale: 1.03 }}
-              transition={{ duration: 0.25 }}
-            >
-              <div className="absolute inset-0" style={{ background: item.gradient }} />
-              <div className="absolute inset-0" style={{ background: item.pattern }} />
-              <div
-                className="absolute inset-0 opacity-[0.05]"
-                style={{
-                  background: 'repeating-linear-gradient(65deg, transparent, transparent 18px, rgba(0,212,255,0.6) 18px, rgba(0,212,255,0.6) 19px)',
-                }}
-              />
-              <div
-                className="absolute bottom-0 left-0 right-0 px-2 py-1.5"
-                style={{ background: 'linear-gradient(0deg, rgba(0,0,0,0.85) 0%, transparent 100%)' }}
-              >
-                <p className="text-[10px] tracking-wider uppercase text-gray-300">{item.label}</p>
-              </div>
-            </motion.div>
+            <MobileGalleryCard key={item.id} item={item} />
           ))}
         </motion.div>
 
@@ -284,7 +247,7 @@ export default function GallerySection() {
           transition={{ delay: 0.7, duration: 0.5 }}
         >
           <button
-            className="relative px-10 py-3.5 text-sm font-bold tracking-[0.2em] uppercase transition-all duration-300 group"
+            className="relative px-10 py-3.5 text-sm font-bold tracking-[0.2em] uppercase transition-all duration-300"
             style={{
               fontFamily: 'var(--font-oswald)',
               border: '1px solid rgba(0,212,255,0.5)',

@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { motion, AnimatePresence, type Variants } from 'framer-motion'
+import { motion, AnimatePresence, useSpring, type Variants } from 'framer-motion'
+import Image from 'next/image'
 
 /* ─────────────────────────────────────────────
    Types
@@ -75,18 +76,22 @@ const buttonsVariants: Variants = {
 
 export default function HeroSection() {
   const [wordIndex, setWordIndex] = useState(0)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
-  /* Mouse parallax */
+  /* Framer-motion spring values for parallax */
+  const parallaxX = useSpring(0, { stiffness: 50, damping: 20 })
+  const parallaxY = useSpring(0, { stiffness: 50, damping: 20 })
+
+  /* Mouse parallax — update spring targets */
   useEffect(() => {
-    const handler = (e: MouseEvent) =>
-      setMousePos({
-        x: e.clientX / window.innerWidth - 0.5,
-        y: e.clientY / window.innerHeight - 0.5,
-      })
+    const handler = (e: MouseEvent) => {
+      const nx = (e.clientX / window.innerWidth - 0.5) * 2  // -1 to 1
+      const ny = (e.clientY / window.innerHeight - 0.5) * 2  // -1 to 1
+      parallaxX.set(nx * 20)
+      parallaxY.set(ny * 20)
+    }
     window.addEventListener('mousemove', handler)
     return () => window.removeEventListener('mousemove', handler)
-  }, [])
+  }, [parallaxX, parallaxY])
 
   /* Rotating words */
   useEffect(() => {
@@ -113,21 +118,43 @@ export default function HeroSection() {
     []
   )
 
-  const parallaxX = mousePos.x * 15
-  const parallaxY = mousePos.y * 15
-
   return (
     <section
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
       style={{ backgroundColor: '#050505' }}
     >
-      {/* ── Radial gradient overlay (blue glow, center-bottom) ── */}
+      {/* ── Background layer 1: race photo with parallax ── */}
+      <motion.div
+        aria-hidden
+        className="absolute inset-[-40px]"
+        style={{ x: parallaxX, y: parallaxY }}
+      >
+        <Image
+          src="/images/dillon-race.jpg"
+          fill
+          alt=""
+          priority
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
+        />
+      </motion.div>
+
+      {/* ── Background layer 2: cinematic gradient overlay ── */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(0,212,255,0.12) 0%, transparent 70%)',
+            'linear-gradient(to bottom, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.3) 40%, rgba(5,5,5,0.85) 100%)',
+        }}
+      />
+
+      {/* ── Background layer 3: vignette ── */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(5,5,5,0.6) 100%)',
         }}
       />
 
@@ -149,13 +176,8 @@ export default function HeroSection() {
         ))}
       </div>
 
-      {/* ── Particles (mouse parallax) ── */}
-      <motion.div
-        aria-hidden
-        className="absolute inset-0 pointer-events-none"
-        animate={{ x: parallaxX, y: parallaxY }}
-        transition={{ type: 'spring', stiffness: 60, damping: 25, mass: 0.8 }}
-      >
+      {/* ── Particles ── */}
+      <div aria-hidden className="absolute inset-0 pointer-events-none">
         {particles.map((p) => (
           <span
             key={p.id}
@@ -171,7 +193,7 @@ export default function HeroSection() {
             }}
           />
         ))}
-      </motion.div>
+      </div>
 
       {/* ── Main content ── */}
       <div className="relative z-10 flex flex-col items-center text-center px-6 py-20">
@@ -183,7 +205,7 @@ export default function HeroSection() {
           className="tracking-widest text-xs mb-8 font-medium uppercase"
           style={{ color: '#00D4FF', letterSpacing: '0.3em' }}
         >
-          Corpus Christi University · 2026
+          CORPUS CHRISTI ISLANDERS · 2026
         </motion.p>
 
         {/* Name — DILLON */}
@@ -244,7 +266,7 @@ export default function HeroSection() {
           className="mt-4 text-sm tracking-widest font-light uppercase"
           style={{ color: '#9090A8', letterSpacing: '0.35em' }}
         >
-          800M Runner
+          800M RUNNER
         </motion.p>
 
         {/* Rotating words */}

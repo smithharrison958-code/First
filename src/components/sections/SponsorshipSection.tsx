@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import Image from "next/image";
 
 /* ─────────────────────────────────────────────
    Data
@@ -65,6 +66,7 @@ const tiers = [
     accent: "#FFD84D",
     bg: "rgba(20,16,4,0.95)",
     badge: "Most Exclusive",
+    showTeamImage: true,
   },
   {
     name: "OFFICIAL PARTNER",
@@ -82,6 +84,7 @@ const tiers = [
     accent: "#00D4FF",
     bg: "rgba(4,12,20,0.95)",
     badge: "Most Popular",
+    showTeamImage: false,
   },
   {
     name: "BRAND AMBASSADOR",
@@ -98,6 +101,7 @@ const tiers = [
     accent: "#B4B4C8",
     bg: "rgba(10,10,16,0.95)",
     badge: null,
+    showTeamImage: false,
   },
 ];
 
@@ -106,6 +110,100 @@ const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 /* ─────────────────────────────────────────────
    Sub-components
 ───────────────────────────────────────────── */
+
+function HeroSplit() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.2 });
+
+  const headerRef = useRef<HTMLDivElement>(null);
+  const headerInView = useInView(headerRef, { once: true, amount: 0.3 });
+
+  return (
+    <div
+      ref={ref}
+      className="flex flex-col lg:flex-row mb-20 min-h-[500px] lg:min-h-[600px]"
+      style={{ overflow: "hidden" }}
+    >
+      {/* ── Left: Text header ── */}
+      <div
+        ref={headerRef}
+        className="lg:w-1/2 flex flex-col justify-center py-12 lg:py-16 pr-0 lg:pr-12 z-10 relative"
+      >
+        <motion.p
+          className="text-xs uppercase tracking-widest mb-4 font-semibold"
+          style={{ color: "#00D4FF" }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+        >
+          Partnership Opportunities
+        </motion.p>
+
+        <motion.h2
+          className="font-bold text-white leading-[0.9] mb-6"
+          style={{ fontFamily: "var(--font-oswald)" }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.65, delay: 0.1, ease }}
+        >
+          <span className="block text-5xl md:text-7xl">INVEST IN</span>
+          <span
+            className="block text-5xl md:text-7xl"
+            style={{
+              backgroundImage: "linear-gradient(90deg, #ffffff 0%, #00D4FF 50%, #ffffff 100%)",
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              animation: "text-shimmer 4s linear infinite",
+            }}
+          >
+            EXCELLENCE
+          </span>
+        </motion.h2>
+
+        <motion.p
+          className="text-base md:text-lg text-white/55 leading-relaxed max-w-lg"
+          initial={{ opacity: 0, y: 16 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.22, ease }}
+        >
+          Align your brand with an elite NCAA athlete who embodies speed, discipline,
+          and the American sports dream.
+        </motion.p>
+      </div>
+
+      {/* ── Right: Image ── */}
+      <div className="lg:w-1/2 relative h-[500px] lg:h-auto overflow-hidden">
+        {/* Gradient overlay blending left edge into section bg */}
+        <div
+          className="absolute inset-0 z-10 pointer-events-none"
+          style={{
+            background: "linear-gradient(to right, #050505 0%, transparent 40%)",
+          }}
+        />
+
+        <motion.div
+          className="absolute inset-0"
+          initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
+          animate={inView ? { clipPath: "inset(0% 0% 0% 0%)" } : {}}
+          transition={{ duration: 1.1, delay: 0.15, ease }}
+          whileHover={{ scale: 1.02 }}
+          style={{ transformOrigin: "center" }}
+        >
+          <Image
+            src="/images/dillon-studio-pointing.jpg"
+            alt="Dillon Smith pointing at camera"
+            fill
+            style={{ objectFit: "cover", objectPosition: "top center" }}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            priority
+          />
+        </motion.div>
+      </div>
+    </div>
+  );
+}
 
 function FeatureCard({
   card,
@@ -221,7 +319,7 @@ function TierCard({
           className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 text-[10px] font-bold uppercase tracking-widest rounded-full"
           style={{
             background: tier.accent,
-            color: tier.theme === "gold" ? "#050505" : "#050505",
+            color: "#050505",
           }}
         >
           {tier.badge}
@@ -239,6 +337,32 @@ function TierCard({
         className="h-px mb-5 mt-1"
         style={{ background: tier.border }}
       />
+
+      {/* Team image thumbnail — Title Sponsor only */}
+      {tier.showTeamImage && (
+        <div className="relative w-full h-28 mb-5 overflow-hidden rounded-sm">
+          <Image
+            src="/images/dillon-relay-team.jpg"
+            alt="Dillon Smith relay team"
+            fill
+            style={{ objectFit: "cover", objectPosition: "center" }}
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to top, rgba(20,16,4,0.85) 0%, rgba(20,16,4,0.2) 60%, transparent 100%)",
+            }}
+          />
+          <p
+            className="absolute bottom-2 left-3 text-[10px] uppercase tracking-widest font-bold"
+            style={{ color: tier.accent }}
+          >
+            Team Presence Included
+          </p>
+        </div>
+      )}
 
       {/* Perks */}
       <ul className="flex flex-col gap-3 mb-8 flex-1">
@@ -285,9 +409,6 @@ function TierCard({
 ───────────────────────────────────────────── */
 
 export default function SponsorshipSection() {
-  const headerRef = useRef<HTMLDivElement>(null);
-  const headerInView = useInView(headerRef, { once: true, amount: 0.3 });
-
   const mediaRef = useRef<HTMLDivElement>(null);
   const mediaInView = useInView(mediaRef, { once: true, amount: 0.4 });
 
@@ -321,51 +442,8 @@ export default function SponsorshipSection() {
 
       <div className="container-athlete relative z-10">
 
-        {/* ── Hero Pitch ── */}
-        <div ref={headerRef} className="mb-20 text-center max-w-4xl mx-auto">
-          <motion.p
-            className="text-xs uppercase tracking-widest mb-4 font-semibold"
-            style={{ color: "#00D4FF" }}
-            initial={{ opacity: 0, y: 10 }}
-            animate={headerInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
-          >
-            Partnership Opportunities
-          </motion.p>
-
-          <motion.h2
-            className="font-bold text-white leading-[0.9] mb-6"
-            style={{ fontFamily: "var(--font-oswald)" }}
-            initial={{ opacity: 0, y: 24 }}
-            animate={headerInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.65, delay: 0.1, ease }}
-          >
-            <span className="block text-5xl md:text-7xl">INVEST IN</span>
-            <span
-              className="block text-5xl md:text-7xl"
-              style={{
-                backgroundImage: "linear-gradient(90deg, #ffffff 0%, #00D4FF 50%, #ffffff 100%)",
-                backgroundSize: "200% auto",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "text-shimmer 4s linear infinite",
-              }}
-            >
-              EXCELLENCE
-            </span>
-          </motion.h2>
-
-          <motion.p
-            className="text-base md:text-lg text-white/55 leading-relaxed max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 16 }}
-            animate={headerInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.22, ease }}
-          >
-            Align your brand with an elite NCAA athlete who embodies speed, discipline,
-            and the American sports dream.
-          </motion.p>
-        </div>
+        {/* ── Hero Split Layout ── */}
+        <HeroSplit />
 
         {/* ── Why Sponsor Dillon ── */}
         <div className="mb-20">

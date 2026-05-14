@@ -8,6 +8,7 @@ import {
   useSpring,
 } from "framer-motion";
 import { useRef } from "react";
+import Image from "next/image";
 
 /* ─────────────────────────────────────────────
    Data
@@ -220,6 +221,80 @@ function HorizontalLine() {
 }
 
 /* ─────────────────────────────────────────────
+   Cinematic Photo Banner
+───────────────────────────────────────────── */
+
+function PhotoBanner() {
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(bannerRef, { once: true, amount: 0.25 });
+
+  // Parallax: image shifts up 40px as user scrolls past
+  const { scrollYProgress } = useScroll({
+    target: bannerRef,
+    offset: ["start end", "end start"],
+  });
+  const imageY = useTransform(scrollYProgress, [0, 1], [0, -40]);
+
+  return (
+    <div
+      ref={bannerRef}
+      className="relative w-full overflow-hidden mb-20"
+      style={{ height: "280px" }}
+    >
+      {/* Parallax image */}
+      <motion.div
+        className="absolute inset-0 w-full"
+        style={{ y: imageY, height: "calc(100% + 40px)", top: 0 }}
+      >
+        <Image
+          src="/images/dillon-race.jpg"
+          alt="Dillon Smith mid-race"
+          fill
+          style={{ objectFit: "cover", objectPosition: "center 30%" }}
+          sizes="100vw"
+        />
+      </motion.div>
+
+      {/* Dark vignette overlay */}
+      <div
+        className="absolute inset-0 z-10 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to right, rgba(5,5,5,0.8) 0%, rgba(5,5,5,0.3) 50%, rgba(5,5,5,0.8) 100%)",
+        }}
+      />
+
+      {/* Center text: PB number + label */}
+      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
+        <motion.p
+          className="font-bold leading-none"
+          style={{
+            fontFamily: "var(--font-oswald)",
+            fontSize: "clamp(4rem, 12vw, 8rem)",
+            color: "#00D4FF",
+            textShadow: "0 0 60px rgba(0,212,255,0.55), 0 0 120px rgba(0,212,255,0.25)",
+            lineHeight: 1,
+          }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={inView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        >
+          1:47.3
+        </motion.p>
+        <motion.p
+          className="text-white text-xs md:text-sm uppercase tracking-widest mt-3 font-semibold"
+          initial={{ opacity: 0, y: 8 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        >
+          Personal Best
+        </motion.p>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    Main Section
 ───────────────────────────────────────────── */
 
@@ -312,6 +387,9 @@ export default function StatsSection() {
             ))}
           </div>
         </div>
+
+        {/* ── Cinematic Photo Banner ── */}
+        <PhotoBanner />
 
         {/* ── Stat Cards ── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
