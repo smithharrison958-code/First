@@ -238,8 +238,7 @@ function PhotoBanner() {
   return (
     <div
       ref={bannerRef}
-      className="relative w-full overflow-hidden mb-20"
-      style={{ height: "280px" }}
+      className="relative w-full overflow-hidden mb-20 h-[280px] md:h-[360px]"
     >
       {/* Parallax image */}
       <motion.div
