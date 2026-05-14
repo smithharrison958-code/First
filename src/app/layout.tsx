@@ -1,63 +1,94 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { CartProvider } from "@/lib/store";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import CartDrawer from "@/components/ui/CartDrawer";
-import LoadingScreen from "@/components/ui/LoadingScreen";
+import type { Metadata } from 'next'
+import { Oswald, Inter } from 'next/font/google'
+import './globals.css'
+import { RaceDayProvider } from '@/lib/context'
+import { SmoothScrollProvider } from '@/lib/SmoothScroll'
+
+/* ─────────────────────────────────────────────
+   Fonts
+   next/font self-hosts these — no browser
+   request to Google at runtime.
+───────────────────────────────────────────── */
+
+const oswald = Oswald({
+  subsets: ['latin'],
+  variable: '--font-oswald',
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+/* ─────────────────────────────────────────────
+   Metadata
+───────────────────────────────────────────── */
 
 export const metadata: Metadata = {
   title: {
-    default: "PureLife Kitchen — Cook Without Compromise",
-    template: "%s | PureLife Kitchen",
+    default: 'Dillon Smith | Elite 800m Runner',
+    template: '%s | Dillon Smith',
   },
   description:
-    "Microplastic-free, non-toxic kitchen essentials. Beautifully crafted stainless steel, wood, glass, and cast iron products for the health-conscious home cook.",
+    'Dillon Smith is an elite NCAA 800m runner competing for Corpus Christi University — pushing the limits of middle-distance running with speed, discipline, and drive.',
   keywords: [
-    "microplastic-free kitchen",
-    "non-toxic cookware",
-    "stainless steel cookware",
-    "wooden cutting board",
-    "PFAS-free kitchen",
-    "glass food storage",
-    "cast iron skillet",
-    "healthy kitchen",
+    '800m runner',
+    'NCAA track and field',
+    'Dillon Smith athlete',
+    'Corpus Christi University track',
+    'middle distance runner',
+    'elite sprinter',
+    'college track athlete',
+    '800 meters',
   ],
-  authors: [{ name: "PureLife Kitchen" }],
-  creator: "PureLife Kitchen",
+  authors: [{ name: 'Dillon Smith' }],
+  creator: 'Dillon Smith',
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://purelifekitchen.com",
-    siteName: "PureLife Kitchen",
-    title: "PureLife Kitchen — Cook Without Compromise",
+    type: 'profile',
+    locale: 'en_US',
+    siteName: 'Dillon Smith | Elite 800m Runner',
+    title: 'Dillon Smith | Elite 800m Runner',
     description:
-      "Microplastic-free, non-toxic kitchen essentials. Beautifully crafted for the health-conscious home cook.",
+      'Elite NCAA 800m runner at Corpus Christi University. Speed. Discipline. Drive.',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "PureLife Kitchen — Cook Without Compromise",
-    description: "Microplastic-free, non-toxic kitchen essentials.",
-    creator: "@purelifekitchen",
+    card: 'summary_large_image',
+    title: 'Dillon Smith | Elite 800m Runner',
+    description: 'Elite NCAA 800m runner at Corpus Christi University.',
   },
   robots: {
     index: true,
     follow: true,
   },
-};
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+/* ─────────────────────────────────────────────
+   Root Layout  (Server Component — no "use client")
+───────────────────────────────────────────── */
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-[#FAFAF7] text-[#1A1A1A] font-sans">
-        <CartProvider>
-          <LoadingScreen />
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <CartDrawer />
-        </CartProvider>
+    <html
+      lang="en"
+      className={`${oswald.variable} ${inter.variable} h-full`}
+    >
+      <body
+        className="min-h-full antialiased font-sans"
+        style={{ backgroundColor: '#050505', color: '#E8E8F0' }}
+      >
+        <RaceDayProvider>
+          <SmoothScrollProvider>
+            {children}
+          </SmoothScrollProvider>
+        </RaceDayProvider>
       </body>
     </html>
-  );
+  )
 }

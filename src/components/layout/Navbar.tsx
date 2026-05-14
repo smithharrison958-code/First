@@ -1,259 +1,388 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ShoppingCart, Search, Menu, X, Leaf } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import { useStore } from "@/lib/store";
+import { useRaceDay } from "@/lib/context";
 
-const navLinks = [
-  { href: "/shop", label: "Shop" },
-  { href: "/about", label: "Our Story" },
-  { href: "/blog", label: "Journal" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/contact", label: "Contact" },
+const NAV_LINKS = [
+  { label: "About", href: "#about" },
+  { label: "Performance", href: "#performance" },
+  { label: "Highlights", href: "#highlights" },
+  { label: "Sponsorship", href: "#sponsorship" },
+  { label: "Contact", href: "#contact" },
 ];
 
+function smoothScrollTo(id: string) {
+  const el = document.querySelector(id);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 export default function Navbar() {
-  const pathname = usePathname();
-  const { cartCount, toggleCart, toggleSearch } = useStore();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState<string | null>(null);
+  const { isRaceDay, toggleRaceDay } = useRaceDay();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
 
-  const isHome = pathname === "/";
+  const handleNavClick = (href: string) => {
+    setMobileOpen(false);
+    smoothScrollTo(href);
+  };
 
   return (
     <>
       <motion.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className={cn(
-          "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
-          scrolled || !isHome
-            ? "bg-[#FAFAF7]/90 backdrop-blur-md shadow-sm border-b border-[#E8E8E8]/60"
-            : "bg-transparent"
-        )}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed top-0 left-0 right-0 z-50"
+        style={{
+          backgroundColor: scrolled
+            ? "rgba(5,5,5,0.82)"
+            : "transparent",
+          backdropFilter: scrolled ? "blur(16px)" : "none",
+          borderBottom: scrolled
+            ? "1px solid rgba(0,212,255,0.08)"
+            : "1px solid transparent",
+          transition:
+            "background-color 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease",
+        }}
       >
-        <div className="container-premium">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group shrink-0">
-              <div className="w-8 h-8 rounded-full bg-[#C4956A] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <Leaf className="w-4 h-4 text-white" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span
-                  className={cn(
-                    "text-xs font-light tracking-[0.2em] uppercase transition-colors",
-                    scrolled || !isHome ? "text-[#1A1A1A]" : "text-[#FAFAF7]"
-                  )}
-                >
-                  PureLife
-                </span>
-                <span
-                  className={cn(
-                    "text-sm font-bold tracking-[0.1em] uppercase transition-colors",
-                    scrolled || !isHome ? "text-[#C4956A]" : "text-[#C4956A]"
-                  )}
-                >
-                  Kitchen
-                </span>
-              </div>
-            </Link>
+        <div
+          style={{
+            maxWidth: "1280px",
+            margin: "0 auto",
+            padding: "0 1.5rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: "4.5rem",
+          }}
+        >
+          {/* DS Monogram */}
+          <button
+            onClick={() => smoothScrollTo("body")}
+            aria-label="Back to top"
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              cursor: "none",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "'Oswald', 'Impact', 'Arial Black', sans-serif",
+                fontSize: "1.75rem",
+                fontWeight: 900,
+                color: "transparent",
+                WebkitTextStroke: "1.5px #00D4FF",
+                textShadow:
+                  "0 0 14px rgba(0,212,255,0.6), 0 0 40px rgba(0,212,255,0.25)",
+                letterSpacing: "0.05em",
+                lineHeight: 1,
+              }}
+            >
+              DS
+            </span>
+          </button>
 
-            {/* Desktop Nav */}
-            <nav className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "text-sm font-medium tracking-wide animated-underline transition-colors duration-200",
-                    pathname === link.href
-                      ? "text-[#C4956A]"
-                      : scrolled || !isHome
-                      ? "text-[#1A1A1A] hover:text-[#C4956A]"
-                      : "text-[#FAFAF7]/80 hover:text-[#FAFAF7]"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
+          {/* Desktop Nav */}
+          <nav
+            className="hidden md:flex items-center"
+            style={{ gap: "2.25rem" }}
+          >
+            {NAV_LINKS.map((link) => (
+              <NavLink
+                key={link.href}
+                label={link.label}
+                href={link.href}
+                active={activeLink === link.href}
+                onClick={() => {
+                  setActiveLink(link.href);
+                  handleNavClick(link.href);
+                }}
+              />
+            ))}
+          </nav>
 
-            {/* Right actions */}
-            <div className="flex items-center gap-2">
-              {/* Search */}
-              <button
-                onClick={toggleSearch}
-                className={cn(
-                  "w-9 h-9 rounded-full flex items-center justify-center transition-colors",
-                  scrolled || !isHome
-                    ? "text-[#1A1A1A] hover:bg-[#1A1A1A]/6"
-                    : "text-[#FAFAF7] hover:bg-white/10"
-                )}
-                aria-label="Search"
-              >
-                <Search className="w-4 h-4" />
-              </button>
+          {/* Sponsor CTA + Hamburger */}
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <a
+              href="#sponsorship"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick("#sponsorship");
+              }}
+              className="hidden md:flex items-center"
+              style={{
+                padding: "0.5rem 1.25rem",
+                border: "1px solid #00D4FF",
+                color: "#00D4FF",
+                fontFamily: "'Oswald', sans-serif",
+                fontSize: "0.7rem",
+                fontWeight: 600,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                transition:
+                  "background-color 0.22s ease, color 0.22s ease",
+                borderRadius: "2px",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
+                  "#00D4FF";
+                (e.currentTarget as HTMLAnchorElement).style.color = "#050505";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
+                  "transparent";
+                (e.currentTarget as HTMLAnchorElement).style.color = "#00D4FF";
+              }}
+            >
+              Sponsor Dillon
+            </a>
 
-              {/* Cart */}
-              <button
-                onClick={toggleCart}
-                className={cn(
-                  "w-9 h-9 rounded-full flex items-center justify-center relative transition-colors",
-                  scrolled || !isHome
-                    ? "text-[#1A1A1A] hover:bg-[#1A1A1A]/6"
-                    : "text-[#FAFAF7] hover:bg-white/10"
-                )}
-                aria-label="Open cart"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                {cartCount > 0 && (
-                  <motion.span
-                    key={cartCount}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#C4956A] text-white text-[10px] font-bold rounded-full flex items-center justify-center"
-                  >
-                    {cartCount > 9 ? "9+" : cartCount}
-                  </motion.span>
-                )}
-              </button>
+            {/* Race Day Mode toggle */}
+            <button
+              onClick={toggleRaceDay}
+              title={isRaceDay ? "Exit Race Day Mode" : "Race Day Mode"}
+              aria-label="Toggle Race Day Mode"
+              style={{
+                background: isRaceDay ? "#00D4FF" : "transparent",
+                border: "1px solid rgba(0,212,255,0.5)",
+                color: isRaceDay ? "#050505" : "#00D4FF",
+                padding: "0.35rem 0.65rem",
+                fontSize: "0.6rem",
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                fontFamily: "'Oswald', sans-serif",
+                textTransform: "uppercase",
+                borderRadius: "2px",
+                transition: "all 0.2s ease",
+                cursor: "none",
+              }}
+            >
+              {isRaceDay ? "⚡ RACE ON" : "⚡ RACE DAY"}
+            </button>
 
-              {/* Mobile menu toggle */}
-              <button
-                onClick={() => setMobileOpen((v) => !v)}
-                className={cn(
-                  "md:hidden w-9 h-9 rounded-full flex items-center justify-center transition-colors",
-                  scrolled || !isHome
-                    ? "text-[#1A1A1A] hover:bg-[#1A1A1A]/6"
-                    : "text-[#FAFAF7] hover:bg-white/10"
-                )}
-                aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              >
-                {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-              </button>
-            </div>
+            {/* Hamburger (mobile) */}
+            <button
+              className="md:hidden flex flex-col justify-center items-center"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "none",
+                width: 32,
+                height: 32,
+                position: "relative",
+              }}
+            >
+              <motion.span
+                animate={
+                  mobileOpen
+                    ? { rotate: 45, y: 0, opacity: 1 }
+                    : { rotate: 0, y: -5, opacity: 1 }
+                }
+                style={{
+                  position: "absolute",
+                  height: 1.5,
+                  width: 22,
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 2,
+                  display: "block",
+                }}
+                transition={{ duration: 0.25 }}
+              />
+              <motion.span
+                animate={
+                  mobileOpen
+                    ? { rotate: -45, y: 0, opacity: 1 }
+                    : { rotate: 0, y: 5, opacity: 1 }
+                }
+                style={{
+                  position: "absolute",
+                  height: 1.5,
+                  width: 22,
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 2,
+                  display: "block",
+                }}
+                transition={{ duration: 0.25 }}
+              />
+            </button>
           </div>
         </div>
-
-        {/* Mobile menu */}
-        <motion.div
-          initial={false}
-          animate={mobileOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
-          className="overflow-hidden md:hidden bg-[#FAFAF7]/95 backdrop-blur-md border-t border-[#E8E8E8]/60"
-        >
-          <nav className="container-premium py-6 flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "text-base font-medium py-2 border-b border-[#E8E8E8]/60 transition-colors",
-                  pathname === link.href
-                    ? "text-[#C4956A]"
-                    : "text-[#1A1A1A] hover:text-[#C4956A]"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href="/shop"
-              className="mt-2 h-11 bg-[#1A1A1A] text-[#FAFAF7] rounded flex items-center justify-center text-sm font-medium"
-            >
-              Shop Now
-            </Link>
-          </nav>
-        </motion.div>
       </motion.header>
 
-      {/* Search overlay */}
-      <SearchOverlay />
+      {/* Mobile Full-Screen Overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 49,
+              backgroundColor: "#080808",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "2rem",
+            }}
+          >
+            {/* Decorative glow */}
+            <div
+              style={{
+                position: "absolute",
+                top: "30%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 300,
+                height: 300,
+                borderRadius: "50%",
+                background:
+                  "radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%)",
+                pointerEvents: "none",
+              }}
+            />
+
+            {NAV_LINKS.map((link, i) => (
+              <motion.button
+                key={link.href}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.35, delay: 0.05 + i * 0.06 }}
+                onClick={() => handleNavClick(link.href)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "none",
+                  fontFamily: "'Oswald', 'Impact', sans-serif",
+                  fontSize: "clamp(2rem, 8vw, 3.5rem)",
+                  fontWeight: 700,
+                  color: "#FFFFFF",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  textAlign: "center",
+                  transition: "color 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.color =
+                    "#00D4FF";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.color =
+                    "#FFFFFF";
+                }}
+              >
+                {link.label}
+              </motion.button>
+            ))}
+
+            <motion.a
+              href="#sponsorship"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick("#sponsorship");
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35, delay: 0.38 }}
+              style={{
+                marginTop: "1rem",
+                padding: "0.75rem 2rem",
+                border: "1px solid #00D4FF",
+                color: "#00D4FF",
+                fontFamily: "'Oswald', sans-serif",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                letterSpacing: "0.2em",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                borderRadius: "2px",
+              }}
+            >
+              Sponsor Dillon
+            </motion.a>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
 
-function SearchOverlay() {
-  const { isSearchOpen, closeSearch } = useStore();
-  const [query, setQuery] = useState("");
+interface NavLinkProps {
+  label: string;
+  href: string;
+  active: boolean;
+  onClick: () => void;
+}
 
-  useEffect(() => {
-    if (isSearchOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [isSearchOpen]);
+function NavLink({ label, href, active, onClick }: NavLinkProps) {
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <>
-      {isSearchOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4"
-        >
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={closeSearch}
-          />
-          <motion.div
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.05 }}
-            className="relative w-full max-w-xl bg-[#FAFAF7] rounded-lg shadow-2xl overflow-hidden"
-          >
-            <div className="flex items-center gap-3 px-5 py-4 border-b border-[#E8E8E8]">
-              <Search className="w-4 h-4 text-[#8A8A8A] shrink-0" />
-              <input
-                autoFocus
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search products, articles…"
-                className="flex-1 bg-transparent text-[#1A1A1A] placeholder-[#8A8A8A] text-sm focus:outline-none"
-              />
-              <button onClick={closeSearch} className="text-[#8A8A8A] hover:text-[#1A1A1A] transition-colors">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="px-5 py-4">
-              <p className="text-xs text-[#8A8A8A] mb-3 uppercase tracking-wider font-medium">
-                Popular searches
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {["Cast Iron", "Cutting Board", "Glass Storage", "Stainless Steel"].map((term) => (
-                  <Link
-                    key={term}
-                    href={`/shop?q=${encodeURIComponent(term)}`}
-                    onClick={closeSearch}
-                    className="text-xs px-3 py-1.5 border border-[#E8E8E8] rounded-full text-[#1A1A1A] hover:border-[#C4956A] hover:text-[#C4956A] transition-colors"
-                  >
-                    {term}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </>
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        background: "none",
+        border: "none",
+        cursor: "none",
+        padding: "0.25rem 0",
+        position: "relative",
+        fontFamily: "'Inter', system-ui, sans-serif",
+        fontSize: "0.78rem",
+        fontWeight: 500,
+        letterSpacing: "0.14em",
+        textTransform: "uppercase",
+        color: active || hovered ? "#00D4FF" : "rgba(255,255,255,0.75)",
+        transition: "color 0.2s ease",
+      }}
+      aria-label={`Navigate to ${label}`}
+    >
+      {label}
+      {/* Animated underline */}
+      <motion.span
+        animate={{ scaleX: hovered || active ? 1 : 0 }}
+        initial={{ scaleX: 0 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 1,
+          backgroundColor: "#00D4FF",
+          transformOrigin: "left center",
+          display: "block",
+          boxShadow: "0 0 6px rgba(0,212,255,0.8)",
+        }}
+      />
+    </button>
   );
 }

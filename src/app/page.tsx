@@ -1,26 +1,37 @@
-import type { Metadata } from "next";
-import Hero from "@/components/sections/Hero";
-import MicroplasticsSection from "@/components/sections/MicroplasticsSection";
-import FeaturedProducts from "@/components/sections/FeaturedProducts";
-import BeforeAfter from "@/components/sections/BeforeAfter";
-import Testimonials from "@/components/sections/Testimonials";
-import Newsletter from "@/components/sections/Newsletter";
-
-export const metadata: Metadata = {
-  title: "PureLife Kitchen — Cook Without Compromise",
-  description:
-    "Discover microplastic-free, non-toxic kitchen essentials. Premium stainless steel cookware, wooden cutting boards, glass storage, and cast iron skillets built to last a lifetime.",
-};
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
+import LoadingScreen from '@/components/ui/LoadingScreen'
+import CustomCursor from '@/components/ui/CustomCursor'
+import GrainOverlay from '@/components/ui/GrainOverlay'
+import HeroSection from '@/components/sections/HeroSection'
+import AboutSection from '@/components/sections/AboutSection'
+import StatsSection from '@/components/sections/StatsSection'
+import VideoSection from '@/components/sections/VideoSection'
+import SponsorshipSection from '@/components/sections/SponsorshipSection'
+import GallerySection from '@/components/sections/GallerySection'
+import TestimonialsSection from '@/components/sections/TestimonialsSection'
+import ContactSection from '@/components/sections/ContactSection'
+import RaceDayEffect from '@/components/ui/RaceDayEffect'
 
 export default function HomePage() {
   return (
     <>
-      <Hero />
-      <MicroplasticsSection />
-      <FeaturedProducts />
-      <BeforeAfter />
-      <Testimonials />
-      <Newsletter />
+      <RaceDayEffect />
+      <LoadingScreen />
+      <CustomCursor />
+      <GrainOverlay />
+      <Navbar />
+      <main>
+        <HeroSection />
+        <AboutSection />
+        <StatsSection />
+        <VideoSection />
+        <SponsorshipSection />
+        <GallerySection />
+        <TestimonialsSection />
+        <ContactSection />
+      </main>
+      <Footer />
     </>
-  );
+  )
 }
