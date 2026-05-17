@@ -85,24 +85,37 @@ export default function SponsorshipSection() {
       </div>
 
       {/* ── Giant CTA ── */}
-      <div ref={ctaRef} style={{ textAlign: 'center', padding: '10vh 7vw 12vh', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
-        <motion.p style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#bbb', marginBottom: '1.5rem' }}
-          initial={{ opacity: 0 }} animate={ctaIn ? { opacity: 1 } : {}} transition={{ duration: 0.8 }}>
-          READY TO COLLABORATE?
-        </motion.p>
+      <div ref={ctaRef} style={{ padding: '14vh 7vw 16vh', borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+        <motion.div
+          style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '5vh' }}
+          initial={{ opacity: 0 }} animate={ctaIn ? { opacity: 1 } : {}} transition={{ duration: 1 }}>
+          <div style={{ width: 24, height: '1px', background: 'rgba(0,0,0,0.18)' }} />
+          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#bbb' }}>READY TO COLLABORATE?</span>
+        </motion.div>
         <motion.a
           href="#contact"
           onClick={e => { e.preventDefault(); document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' }) }}
-          style={{ fontFamily: 'var(--font-oswald)', fontWeight: 900, fontSize: 'clamp(3rem, 9vw, 9rem)', color: '#0A0A0A', display: 'block', lineHeight: 1, textDecoration: 'none' }}
-          initial={{ opacity: 0, y: 20 }}
+          style={{
+            fontFamily: 'var(--font-oswald)',
+            fontWeight: 900,
+            fontSize: 'clamp(3.5rem, 11vw, 10rem)',
+            color: '#0A0A0A',
+            display: 'block',
+            lineHeight: 0.88,
+            textDecoration: 'none',
+            letterSpacing: '-0.01em',
+          }}
+          initial={{ opacity: 0, y: 24 }}
           animate={ctaIn ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          whileHover={{ opacity: 0.5 }}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          whileHover={{ opacity: 0.45 }}
         >
-          LET&apos;S TALK
+          LET&apos;S<br />
+          <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(0,0,0,0.2)' }}>TALK</span>
         </motion.a>
-        <motion.p style={{ fontSize: '11px', color: '#bbb', letterSpacing: '0.2em', marginTop: '1.5rem' }}
-          initial={{ opacity: 0 }} animate={ctaIn ? { opacity: 1 } : {}} transition={{ duration: 0.8, delay: 0.4 }}>
+        <motion.p
+          style={{ fontSize: '11px', color: '#bbb', letterSpacing: '0.22em', marginTop: '3vh' }}
+          initial={{ opacity: 0 }} animate={ctaIn ? { opacity: 1 } : {}} transition={{ duration: 1, delay: 0.5 }}>
           dillonsmith.athlete@gmail.com
         </motion.p>
       </div>

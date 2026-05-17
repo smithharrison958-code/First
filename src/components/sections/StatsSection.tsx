@@ -5,113 +5,125 @@ import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
 
 const stats = [
-  { value: '1:47.3', label: 'PERSONAL BEST · 800M', align: 'left' as const, outline: false },
-  { value: '3×', label: 'CONFERENCE CHAMPION', align: 'right' as const, outline: true },
-  { value: '14', label: 'CAREER VICTORIES', align: 'center' as const, outline: false },
-  { value: '2', label: 'NCAA APPEARANCES', align: 'left' as const, outline: false },
+  { value: '1:47.3', label: 'PERSONAL BEST · 800M', side: 'left' as const, outline: false },
+  { value: '3×', label: 'CONFERENCE CHAMPION', side: 'right' as const, outline: true },
+  { value: '14', label: 'CAREER VICTORIES', side: 'left' as const, outline: false },
+  { value: '2', label: 'NCAA APPEARANCES', side: 'right' as const, outline: true },
 ]
 
-function Stat({ value, label, align, outline, delay = 0 }: typeof stats[0] & { delay?: number }) {
+function StatRow({ value, label, side, outline }: typeof stats[0]) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.4 })
-  const alignment = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left'
+  const inView = useInView(ref, { once: true, amount: 0.35 })
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      className={alignment}
       style={{
-        padding: `4vw ${align === 'right' ? '7vw' : align === 'center' ? '7vw' : '7vw'}`,
-        paddingRight: align === 'right' ? '7vw' : align === 'center' ? '7vw' : '20vw',
-        paddingLeft: align === 'left' ? '7vw' : align === 'center' ? '7vw' : '20vw',
         borderTop: '1px solid rgba(0,0,0,0.07)',
-        position: 'relative',
+        display: 'flex',
+        justifyContent: side === 'right' ? 'flex-end' : 'flex-start',
+        padding: `3vh ${side === 'right' ? '7vw' : '0'} 3vh ${side === 'left' ? '7vw' : '0'}`,
       }}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay }}
     >
-      {align === 'left' && (
-        <motion.div style={{ position: 'absolute', left: '5.5vw', top: '50%', transform: 'translateY(-50%)', width: 1, height: 48, background: '#0A0A0A', opacity: 0.15 }}
-          initial={{ scaleY: 0 }} animate={inView ? { scaleY: 1 } : {}} transition={{ duration: 0.6, delay: delay + 0.2 }} />
-      )}
-      <motion.div
-        style={{
-          fontFamily: 'var(--font-oswald)',
-          fontWeight: 900,
-          fontSize: 'clamp(3.5rem, 15vw, 13rem)',
-          lineHeight: 0.88,
-          color: outline ? 'transparent' : '#0A0A0A',
-          WebkitTextStroke: outline ? '1px rgba(0,0,0,0.18)' : undefined,
-        }}
-        initial={{ clipPath: 'inset(0 100% 0 0)' }}
-        animate={inView ? { clipPath: 'inset(0 0% 0 0)' } : {}}
-        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: delay + 0.05 }}
-      >
-        {value}
-      </motion.div>
-      <motion.p
-        style={{ fontSize: '9px', letterSpacing: '0.38em', color: '#999', marginTop: '0.75rem' }}
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.8, delay: delay + 0.5 }}
-      >
-        {label}
-      </motion.p>
-    </motion.div>
+      <div style={{ textAlign: side }}>
+        <motion.div
+          style={{
+            fontFamily: 'var(--font-oswald)',
+            fontWeight: 900,
+            fontSize: 'clamp(4rem, 16vw, 14rem)',
+            lineHeight: 0.88,
+            color: outline ? 'transparent' : '#0A0A0A',
+            WebkitTextStroke: outline ? '1px rgba(0,0,0,0.15)' : undefined,
+          }}
+          initial={{ clipPath: side === 'left' ? 'inset(0 100% 0 0)' : 'inset(0 0 0 100%)' }}
+          animate={inView ? { clipPath: side === 'left' ? 'inset(0 0% 0 0)' : 'inset(0 0 0 0%)' } : {}}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {value}
+        </motion.div>
+        <motion.p
+          style={{ fontSize: '9px', letterSpacing: '0.4em', color: '#bbb', marginTop: '1rem' }}
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.8, delay: 0.55 }}
+        >
+          {label}
+        </motion.p>
+      </div>
+    </div>
   )
 }
 
 function RaceMoment() {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.3 })
+  const inView = useInView(ref, { once: true, amount: 0.25 })
+
   return (
-    <div ref={ref} style={{ position: 'relative', height: '50vh', overflow: 'hidden', margin: '0' }}>
+    <div ref={ref} style={{ position: 'relative', height: '55vh', overflow: 'hidden' }}>
       <motion.div
         style={{ position: 'absolute', inset: 0 }}
         initial={{ scale: 1.06 }}
         animate={inView ? { scale: 1 } : {}}
-        transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
       >
-        <Image src="/images/dillon-race.jpg" alt="Dillon racing" fill style={{ objectFit: 'cover', objectPosition: 'center 20%' }} />
+        <Image
+          src="/images/dillon-race.jpg"
+          alt="Dillon racing"
+          fill
+          sizes="100vw"
+          style={{ objectFit: 'cover', objectPosition: 'center 25%' }}
+        />
       </motion.div>
-      {/* Blend edges */}
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #F2F2EF 0%, transparent 20%, transparent 80%, #F2F2EF 100%)' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #F2F2EF 0%, transparent 30%)' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, #F2F2EF 0%, transparent 25%)' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #F2F2EF 0%, transparent 22%, transparent 78%, #F2F2EF 100%)' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #F2F2EF 0%, transparent 28%)' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, #F2F2EF 0%, transparent 22%)' }} />
+
       <motion.p
-        style={{ position: 'absolute', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', fontSize: '9px', letterSpacing: '0.45em', color: 'rgba(0,0,0,0.45)', whiteSpace: 'nowrap' }}
+        style={{
+          position: 'absolute',
+          bottom: '2.5rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          fontSize: '9px',
+          letterSpacing: '0.45em',
+          color: 'rgba(0,0,0,0.4)',
+          whiteSpace: 'nowrap',
+        }}
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 1, delay: 0.5 }}
+        transition={{ duration: 1.2, delay: 0.6 }}
       >
-        NCAA QUALIFIER · 2025
+        NCAA QUALIFIER · TEXAS RELAYS 2025
       </motion.p>
     </div>
   )
 }
 
 export default function StatsSection() {
-  const ref = useRef<HTMLElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.1 })
+  const headerRef = useRef<HTMLElement>(null)
+  const headerIn = useInView(headerRef, { once: true, amount: 0.1 })
 
   return (
-    <section id="performance" ref={ref} style={{ background: '#F2F2EF' }}>
+    <section id="performance" ref={headerRef} style={{ background: '#F2F2EF' }}>
+
+      {/* Section header */}
       <motion.div
-        style={{ textAlign: 'center', paddingTop: '10vh', paddingBottom: '4vh' }}
+        style={{ padding: '12vh 7vw 6vh', display: 'flex', alignItems: 'center', gap: '1rem' }}
         initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 1 }}
+        animate={headerIn ? { opacity: 1 } : {}}
+        transition={{ duration: 1.2 }}
       >
-        <p style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#999' }}>BY THE NUMBERS</p>
-        <div style={{ width: 32, height: 1, background: 'rgba(0,0,0,0.2)', margin: '1rem auto 0' }} />
+        <div style={{ width: 24, height: '1px', background: 'rgba(0,0,0,0.18)' }} />
+        <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#aaa' }}>BY THE NUMBERS</span>
       </motion.div>
 
-      {stats.map((s, i) => <Stat key={s.label} {...s} delay={0} />)}
+      {/* Stats — alternating left/right, full edge-to-edge */}
+      {stats.map(s => <StatRow key={s.label} {...s} />)}
 
+      {/* Race photo interlude */}
       <RaceMoment />
 
-      <div style={{ height: '8vh' }} />
+      <div style={{ height: '10vh' }} />
     </section>
   )
 }

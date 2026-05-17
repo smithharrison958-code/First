@@ -5,9 +5,30 @@ import { motion, useInView, AnimatePresence } from 'framer-motion'
 
 const subjects = ['Sponsorship Inquiry', 'NIL Opportunity', 'Media Request', 'Brand Collaboration', 'General']
 
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  background: 'transparent',
+  border: 'none',
+  borderBottom: '1px solid rgba(255,255,255,0.1)',
+  color: 'rgba(255,255,255,0.85)',
+  fontSize: '0.85rem',
+  padding: '0.85rem 0',
+  outline: 'none',
+  letterSpacing: '0.04em',
+  fontFamily: 'inherit',
+}
+
+const labelStyle: React.CSSProperties = {
+  fontSize: '9px',
+  letterSpacing: '0.35em',
+  color: 'rgba(255,255,255,0.2)',
+  display: 'block',
+  marginBottom: '0.4rem',
+}
+
 export default function ContactSection() {
   const ref = useRef<HTMLElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.2 })
+  const inView = useInView(ref, { once: true, amount: 0.15 })
   const [form, setForm] = useState({ name: '', email: '', subject: subjects[0], message: '' })
   const [sent, setSent] = useState(false)
   const [err, setErr] = useState('')
@@ -22,102 +43,137 @@ export default function ContactSection() {
     setErr(''); setSent(true)
   }
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%', background: 'transparent',
-    border: 'none', borderBottom: '1px solid rgba(255,255,255,0.12)',
-    color: '#fff', fontSize: '0.875rem', padding: '0.75rem 0',
-    outline: 'none', letterSpacing: '0.05em',
-  }
-
   return (
-    <section id="contact" ref={ref} style={{ background: '#000', minHeight: '100vh', paddingTop: '14vh', paddingBottom: '14vh' }}>
-      <div style={{ maxWidth: '1100px', margin: '0 auto', paddingLeft: '8vw', paddingRight: '8vw' }}>
+    <section id="contact" ref={ref} style={{ background: '#080808', minHeight: '100vh', paddingTop: '14vh', paddingBottom: '14vh' }}>
+      <div style={{ maxWidth: '1100px', margin: '0 auto', paddingLeft: '7vw', paddingRight: '7vw' }}>
 
-        {/* Header */}
+        {/* Eyebrow */}
         <motion.div
-          style={{ marginBottom: '8vh' }}
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '5vh' }}
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 1.2 }}
         >
-          <p style={{ fontSize: '10px', letterSpacing: '0.45em', color: '#00D4FF', marginBottom: '2rem' }}>GET IN TOUCH</p>
-          <div style={{ overflow: 'hidden' }}>
-            <div style={{ fontFamily: 'var(--font-oswald)', fontWeight: 900, fontSize: 'clamp(3rem, 10vw, 9rem)', lineHeight: 0.88, color: '#fff' }}>
-              LET&apos;S BUILD
-            </div>
-            <div style={{ fontFamily: 'var(--font-oswald)', fontWeight: 900, fontSize: 'clamp(3rem, 10vw, 9rem)', lineHeight: 0.88, color: 'transparent', WebkitTextStroke: '1px rgba(255,255,255,0.35)' }}>
-              SOMETHING GREAT
-            </div>
-          </div>
+          <div style={{ width: 24, height: '1px', background: 'rgba(255,255,255,0.15)' }} />
+          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: 'rgba(255,255,255,0.25)' }}>GET IN TOUCH</span>
         </motion.div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: '10vw', alignItems: 'start' }}
-          className="grid-cols-1 md:grid-cols-2">
+        {/* Headline */}
+        <motion.div
+          style={{ marginBottom: '10vh', overflow: 'hidden' }}
+          initial={{ opacity: 0, y: 32 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        >
+          <h2 style={{
+            fontFamily: 'var(--font-oswald)',
+            fontWeight: 900,
+            fontSize: 'clamp(3rem, 10vw, 9rem)',
+            lineHeight: 0.88,
+            letterSpacing: '-0.01em',
+          }}>
+            <span style={{ color: '#F8F8F5', display: 'block' }}>LET&apos;S BUILD</span>
+            <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(255,255,255,0.2)', display: 'block' }}>SOMETHING</span>
+          </h2>
+        </motion.div>
 
-          {/* Left */}
+        {/* Two-column layout */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '12vw', alignItems: 'start' }}>
+
+          {/* Left — contact details */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           >
-            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', lineHeight: 1.9, marginBottom: '2.5rem' }}>
+            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', lineHeight: 2, marginBottom: '5vh' }}>
               For NIL partnerships, sponsorship inquiries, brand collaborations, and media requests. Response within 24–48 hours.
             </p>
-            <div style={{ marginBottom: '1.5rem' }}>
-              <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.25)', marginBottom: '0.4rem' }}>EMAIL</p>
-              <a href="mailto:dillonsmith.athlete@gmail.com" style={{ fontSize: '0.85rem', color: '#fff', textDecoration: 'none', letterSpacing: '0.05em' }}>dillonsmith.athlete@gmail.com</a>
+
+            <div style={{ marginBottom: '2.5rem' }}>
+              <p style={labelStyle}>EMAIL</p>
+              <a
+                href="mailto:dillonsmith.athlete@gmail.com"
+                style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none', letterSpacing: '0.04em' }}
+              >
+                dillonsmith.athlete@gmail.com
+              </a>
             </div>
+
             <div>
-              <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.25)', marginBottom: '0.4rem' }}>INSTAGRAM</p>
-              <a href="#" style={{ fontSize: '0.85rem', color: '#fff', textDecoration: 'none', letterSpacing: '0.05em' }}>@dillonsmith_runs</a>
+              <p style={labelStyle}>INSTAGRAM</p>
+              <a
+                href="#"
+                style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none', letterSpacing: '0.04em' }}
+              >
+                @dillonsmith_runs
+              </a>
             </div>
           </motion.div>
 
           {/* Right — form */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.25 }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
           >
             <AnimatePresence mode="wait">
               {sent ? (
                 <motion.div
                   key="success"
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  style={{ paddingTop: '3rem' }}
+                  transition={{ duration: 0.8 }}
+                  style={{ paddingTop: '2rem' }}
                 >
-                  <div style={{ width: 40, height: 1, background: '#00D4FF', marginBottom: '2rem' }} />
-                  <p style={{ fontSize: '11px', letterSpacing: '0.35em', color: '#00D4FF', marginBottom: '0.75rem' }}>MESSAGE SENT</p>
-                  <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>{"Dillon's team will be in touch within 24–48 hours."}</p>
+                  <div style={{ width: 32, height: '1px', background: 'rgba(255,255,255,0.2)', marginBottom: '2.5rem' }} />
+                  <p style={{ fontSize: '11px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.5)', marginBottom: '1rem' }}>MESSAGE SENT</p>
+                  <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', lineHeight: 1.8 }}>{"Dillon's team will be in touch within 24–48 hours."}</p>
                 </motion.div>
               ) : (
-                <form key="form" onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                <form key="form" onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem' }}>
                     <div>
-                      <label style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.25)', display: 'block', marginBottom: '0.5rem' }}>NAME</label>
+                      <label style={labelStyle}>NAME</label>
                       <input name="name" value={form.name} onChange={change} style={inputStyle} placeholder="Your name" required />
                     </div>
                     <div>
-                      <label style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.25)', display: 'block', marginBottom: '0.5rem' }}>EMAIL</label>
+                      <label style={labelStyle}>EMAIL</label>
                       <input name="email" type="email" value={form.email} onChange={change} style={inputStyle} placeholder="your@email.com" required />
                     </div>
                   </div>
+
                   <div>
-                    <label style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.25)', display: 'block', marginBottom: '0.5rem' }}>SUBJECT</label>
-                    <select name="subject" value={form.subject} onChange={change} style={{ ...inputStyle, appearance: 'none' }}>
-                      {subjects.map(s => <option key={s} value={s} style={{ background: '#111' }}>{s}</option>)}
+                    <label style={labelStyle}>SUBJECT</label>
+                    <select name="subject" value={form.subject} onChange={change} style={{ ...inputStyle, appearance: 'none', cursor: 'none' }}>
+                      {subjects.map(s => <option key={s} value={s} style={{ background: '#111', color: '#fff' }}>{s}</option>)}
                     </select>
                   </div>
+
                   <div>
-                    <label style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.25)', display: 'block', marginBottom: '0.5rem' }}>MESSAGE</label>
-                    <textarea name="message" value={form.message} onChange={change} rows={4} style={{ ...inputStyle, resize: 'none' }} placeholder="Tell us about your project..." required />
+                    <label style={labelStyle}>MESSAGE</label>
+                    <textarea name="message" value={form.message} onChange={change} rows={4}
+                      style={{ ...inputStyle, resize: 'none', lineHeight: 1.8 }}
+                      placeholder="Tell us about your project..." required />
                   </div>
-                  {err && <p style={{ fontSize: '11px', color: '#ff4444', letterSpacing: '0.1em' }}>{err}</p>}
+
+                  {err && <p style={{ fontSize: '11px', color: 'rgba(255,80,80,0.7)', letterSpacing: '0.1em', marginTop: '-1.5rem' }}>{err}</p>}
+
                   <motion.button
                     type="submit"
-                    style={{ alignSelf: 'flex-start', fontSize: '10px', letterSpacing: '0.35em', color: '#fff', background: 'none', border: 'none', borderBottom: '1px solid rgba(255,255,255,0.4)', paddingBottom: '4px', cursor: 'none' }}
-                    whileHover={{ borderBottomColor: '#00D4FF', color: '#00D4FF' }}
+                    style={{
+                      alignSelf: 'flex-start',
+                      fontSize: '10px',
+                      letterSpacing: '0.38em',
+                      color: 'rgba(255,255,255,0.7)',
+                      background: 'none',
+                      border: 'none',
+                      borderBottom: '1px solid rgba(255,255,255,0.2)',
+                      paddingBottom: '4px',
+                      cursor: 'none',
+                      transition: 'color 0.2s ease, border-color 0.2s ease',
+                    }}
+                    whileHover={{ color: '#fff', borderBottomColor: 'rgba(255,255,255,0.5)' }}
                   >
                     SEND MESSAGE →
                   </motion.button>

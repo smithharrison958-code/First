@@ -10,54 +10,68 @@ const quotes = [
   { q: "He runs every rep like it's a championship race.", name: 'Coach Linda Park', role: 'Assistant Coach' },
 ]
 
-export default function TestimonialsSection() {
-  const ref = useRef<HTMLElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.1 })
+function QuoteRow({ q, name, role, index }: typeof quotes[0] & { index: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.4 })
+  const even = index % 2 === 0
 
   return (
-    <section ref={ref} style={{ background: '#F2F2EF' }}>
+    <motion.div
+      ref={ref}
+      style={{
+        padding: `7vh 7vw`,
+        paddingLeft: even ? '7vw' : '18vw',
+        paddingRight: even ? '18vw' : '7vw',
+        borderTop: '1px solid rgba(0,0,0,0.06)',
+      }}
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <p style={{
+        fontSize: 'clamp(1.1rem, 2.4vw, 1.75rem)',
+        color: '#0A0A0A',
+        lineHeight: 1.65,
+        fontWeight: 300,
+        marginBottom: '2.5rem',
+        letterSpacing: '-0.01em',
+      }}>
+        &ldquo;{q}&rdquo;
+      </p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+        <div style={{ width: 20, height: '1px', background: 'rgba(0,0,0,0.2)' }} />
+        <div>
+          <p style={{ fontSize: '10px', letterSpacing: '0.22em', color: '#0A0A0A', fontWeight: 600 }}>{name}</p>
+          <p style={{ fontSize: '9px', letterSpacing: '0.16em', color: '#bbb', marginTop: '3px' }}>{role}</p>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+export default function TestimonialsSection() {
+  const headerRef = useRef<HTMLElement>(null)
+  const headerIn = useInView(headerRef, { once: true, amount: 0.1 })
+
+  return (
+    <section ref={headerRef} style={{ background: '#F2F2EF' }}>
+
+      {/* Header */}
       <motion.div
-        style={{ textAlign: 'center', paddingTop: '10vh', paddingBottom: '5vh' }}
+        style={{ padding: '12vh 7vw 4vh', display: 'flex', alignItems: 'center', gap: '1rem' }}
         initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 1 }}
+        animate={headerIn ? { opacity: 1 } : {}}
+        transition={{ duration: 1.2 }}
       >
-        <p style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#999' }}>VOICES OF THE TRACK</p>
-        <div style={{ width: 32, height: 1, background: 'rgba(0,0,0,0.15)', margin: '1rem auto 0' }} />
+        <div style={{ width: 24, height: '1px', background: 'rgba(0,0,0,0.18)' }} />
+        <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#aaa' }}>VOICES OF THE TRACK</span>
       </motion.div>
 
-      {quotes.map((q, i) => {
-        const ref2 = useRef<HTMLDivElement>(null)
-        const iv = useInView(ref2, { once: true, amount: 0.5 })
-        const even = i % 2 === 0
-        return (
-          <motion.div
-            key={i}
-            ref={ref2}
-            style={{
-              padding: `5vh ${even ? '7vw' : '17vw'} 5vh ${even ? '7vw' : '17vw'}`,
-              paddingLeft: even ? '7vw' : '16vw',
-              paddingRight: even ? '16vw' : '7vw',
-              borderTop: '1px solid rgba(0,0,0,0.06)',
-            }}
-            initial={{ opacity: 0, y: 24 }}
-            animate={iv ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <p style={{ fontSize: 'clamp(1rem, 2.2vw, 1.6rem)', color: '#0A0A0A', lineHeight: 1.6, fontWeight: 300, marginBottom: '1.5rem' }}>
-              &ldquo;{q.q}&rdquo;
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ width: 24, height: 1, background: 'rgba(0,0,0,0.2)' }} />
-              <div>
-                <p style={{ fontSize: '10px', letterSpacing: '0.2em', color: '#0A0A0A', fontWeight: 600 }}>{q.name}</p>
-                <p style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#999', marginTop: '2px' }}>{q.role}</p>
-              </div>
-            </div>
-          </motion.div>
-        )
-      })}
-      <div style={{ height: '6vh' }} />
+      {quotes.map((q, i) => (
+        <QuoteRow key={i} {...q} index={i} />
+      ))}
+
+      <div style={{ height: '8vh' }} />
     </section>
   )
 }
