@@ -37,7 +37,7 @@ function StatBeat({ value, label, side, outline }: typeof stats[0]) {
             fontSize: 'clamp(4.5rem, 18vw, 16rem)',
             lineHeight: 0.85,
             color: outline ? 'transparent' : '#0A0A0A',
-            WebkitTextStroke: outline ? '1px rgba(0,0,0,0.14)' : undefined,
+            WebkitTextStroke: outline ? '1.5px rgba(0,0,0,0.5)' : undefined,
             letterSpacing: '-0.02em',
           }}
           initial={{ clipPath: side === 'left' ? 'inset(0 100% 0 0)' : 'inset(0 0 0 100%)' }}
@@ -52,7 +52,7 @@ function StatBeat({ value, label, side, outline }: typeof stats[0]) {
           style={{
             fontSize: '9px',
             letterSpacing: '0.42em',
-            color: '#bbb',
+            color: '#777',
             marginTop: '1.25rem',
             textAlign: side,
           }}

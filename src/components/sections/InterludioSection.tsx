@@ -46,7 +46,7 @@ export default function InterludioSection() {
         animate={inView ? { opacity: 1 } : {}}
         transition={{ duration: 1.4, delay: 0.4 }}
       >
-        <p style={{ fontSize: '9px', letterSpacing: '0.52em', color: '#bbb' }}>
+        <p style={{ fontSize: '9px', letterSpacing: '0.52em', color: '#777' }}>
           CORPUS CHRISTI ISLANDERS&nbsp;&nbsp;·&nbsp;&nbsp;800M RUNNER&nbsp;&nbsp;·&nbsp;&nbsp;CLASS OF 2026
         </p>
       </motion.div>

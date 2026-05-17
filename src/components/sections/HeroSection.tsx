@@ -59,7 +59,7 @@ export default function HeroSection() {
           transition={{ duration: 1.6, delay: 0.2 }}
         >
           <div style={{ width: 24, height: '1px', background: 'rgba(0,0,0,0.22)' }} />
-          <span style={{ fontSize: '9px', letterSpacing: '0.48em', color: '#999' }}>CORPUS CHRISTI ISLANDERS</span>
+          <span style={{ fontSize: '9px', letterSpacing: '0.48em', color: '#666' }}>CORPUS CHRISTI ISLANDERS</span>
         </motion.div>
 
         {/* DILLON — solid, spans into photo zone */}
@@ -93,7 +93,7 @@ export default function HeroSection() {
                 fontWeight: 900,
                 fontSize: 'clamp(5rem, 22vw, 20rem)',
                 color: 'transparent',
-                WebkitTextStroke: '1.5px rgba(0,0,0,0.14)',
+                WebkitTextStroke: '1.5px rgba(0,0,0,0.32)',
               }}
             >{l}</motion.span>
           ))}
@@ -113,7 +113,7 @@ export default function HeroSection() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -14, opacity: 0 }}
                 transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                style={{ display: 'block', fontSize: '9px', letterSpacing: '0.44em', color: '#bbb' }}
+                style={{ display: 'block', fontSize: '9px', letterSpacing: '0.44em', color: '#777' }}
               >
                 {WORDS[word]}
               </motion.span>

@@ -51,7 +51,7 @@ function FullBleedFrame({
       }}>
         <p style={{
           fontSize: '9px', letterSpacing: '0.32em',
-          color: 'rgba(255,255,255,0.55)',
+          color: 'rgba(255,255,255,0.78)',
           textAlign: textSide,
         }}>{label}</p>
       </div>
@@ -102,7 +102,7 @@ function SplitRow() {
             padding: '3rem 1.5rem 1.25rem',
             background: 'linear-gradient(to top, rgba(0,0,0,0.38) 0%, transparent 100%)',
           }}>
-            <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.5)' }}>
+            <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.78)' }}>
               {f.label}
             </p>
           </div>
@@ -143,10 +143,10 @@ function TeamRow() {
         background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 45%)',
       }} />
       <div style={{ position: 'absolute', bottom: '1.5rem', left: '2rem', right: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <p style={{ fontSize: '9px', letterSpacing: '0.32em', color: 'rgba(255,255,255,0.55)' }}>
+        <p style={{ fontSize: '9px', letterSpacing: '0.32em', color: 'rgba(255,255,255,0.82)' }}>
           ISLANDERS 2025
         </p>
-        <p style={{ fontSize: '9px', letterSpacing: '0.32em', color: 'rgba(255,255,255,0.3)' }}>
+        <p style={{ fontSize: '9px', letterSpacing: '0.32em', color: 'rgba(255,255,255,0.5)' }}>
           CORPUS CHRISTI
         </p>
       </div>
@@ -170,9 +170,9 @@ export default function GallerySection() {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: 24, height: '1px', background: 'rgba(0,0,0,0.18)' }} />
-          <span style={{ fontSize: '9px', letterSpacing: '0.46em', color: '#aaa' }}>EDITORIAL</span>
+          <span style={{ fontSize: '9px', letterSpacing: '0.46em', color: '#777' }}>EDITORIAL</span>
         </div>
-        <span style={{ fontSize: '9px', letterSpacing: '0.3em', color: '#ccc' }}>2024 – 2026</span>
+        <span style={{ fontSize: '9px', letterSpacing: '0.3em', color: '#888' }}>2024 – 2026</span>
       </motion.div>
 
       {/* Row 1: Full-bleed portrait — THE BRAND (pointing, full body visible at top center) */}

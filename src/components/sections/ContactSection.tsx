@@ -9,8 +9,8 @@ const inputStyle: React.CSSProperties = {
   width: '100%',
   background: 'transparent',
   border: 'none',
-  borderBottom: '1px solid rgba(255,255,255,0.1)',
-  color: 'rgba(255,255,255,0.85)',
+  borderBottom: '1px solid rgba(255,255,255,0.25)',
+  color: 'rgba(255,255,255,0.9)',
   fontSize: '0.85rem',
   padding: '0.85rem 0',
   outline: 'none',
@@ -21,7 +21,7 @@ const inputStyle: React.CSSProperties = {
 const labelStyle: React.CSSProperties = {
   fontSize: '9px',
   letterSpacing: '0.35em',
-  color: 'rgba(255,255,255,0.2)',
+  color: 'rgba(255,255,255,0.5)',
   display: 'block',
   marginBottom: '0.4rem',
 }
@@ -54,8 +54,8 @@ export default function ContactSection() {
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 1.2 }}
         >
-          <div style={{ width: 24, height: '1px', background: 'rgba(255,255,255,0.15)' }} />
-          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: 'rgba(255,255,255,0.25)' }}>GET IN TOUCH</span>
+          <div style={{ width: 24, height: '1px', background: 'rgba(255,255,255,0.35)' }} />
+          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: 'rgba(255,255,255,0.55)' }}>GET IN TOUCH</span>
         </motion.div>
 
         {/* Headline */}
@@ -73,7 +73,7 @@ export default function ContactSection() {
             letterSpacing: '-0.01em',
           }}>
             <span style={{ color: '#F8F8F5', display: 'block' }}>LET&apos;S BUILD</span>
-            <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(255,255,255,0.2)', display: 'block' }}>SOMETHING</span>
+            <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(255,255,255,0.5)', display: 'block' }}>SOMETHING</span>
           </h2>
         </motion.div>
 
@@ -86,7 +86,7 @@ export default function ContactSection() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           >
-            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', lineHeight: 2, marginBottom: '5vh' }}>
+            <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 2, marginBottom: '5vh' }}>
               For NIL partnerships, sponsorship inquiries, brand collaborations, and media requests. Response within 24–48 hours.
             </p>
 
@@ -126,9 +126,9 @@ export default function ContactSection() {
                   transition={{ duration: 0.8 }}
                   style={{ paddingTop: '2rem' }}
                 >
-                  <div style={{ width: 32, height: '1px', background: 'rgba(255,255,255,0.2)', marginBottom: '2.5rem' }} />
-                  <p style={{ fontSize: '11px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.5)', marginBottom: '1rem' }}>MESSAGE SENT</p>
-                  <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.3)', lineHeight: 1.8 }}>{"Dillon's team will be in touch within 24–48 hours."}</p>
+                  <div style={{ width: 32, height: '1px', background: 'rgba(255,255,255,0.35)', marginBottom: '2.5rem' }} />
+                  <p style={{ fontSize: '11px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.75)', marginBottom: '1rem' }}>MESSAGE SENT</p>
+                  <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.8 }}>{"Dillon's team will be in touch within 24–48 hours."}</p>
                 </motion.div>
               ) : (
                 <form key="form" onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
@@ -165,10 +165,10 @@ export default function ContactSection() {
                       alignSelf: 'flex-start',
                       fontSize: '10px',
                       letterSpacing: '0.38em',
-                      color: 'rgba(255,255,255,0.7)',
+                      color: 'rgba(255,255,255,0.88)',
                       background: 'none',
                       border: 'none',
-                      borderBottom: '1px solid rgba(255,255,255,0.2)',
+                      borderBottom: '1px solid rgba(255,255,255,0.45)',
                       paddingBottom: '4px',
                       cursor: 'none',
                       transition: 'color 0.2s ease, border-color 0.2s ease',

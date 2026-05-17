@@ -42,7 +42,7 @@ export default function CinematicSection() {
                 fontSize: 'clamp(3.5rem, 13vw, 12rem)',
                 lineHeight: 0.88,
                 color: i === 1 ? 'transparent' : '#fff',
-                WebkitTextStroke: i === 1 ? '1px rgba(255,255,255,0.35)' : undefined,
+                WebkitTextStroke: i === 1 ? '1px rgba(255,255,255,0.6)' : undefined,
               }}
               initial={{ y: '105%' }}
               animate={inView ? { y: '0%' } : {}}
@@ -59,7 +59,7 @@ export default function CinematicSection() {
           transition={{ duration: 1, delay: 0.7 }}
         >
           <div style={{ width: 40, height: 1, background: 'rgba(255,255,255,0.3)' }} />
-          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: 'rgba(255,255,255,0.4)' }}>800M · CORPUS CHRISTI ISLANDERS</span>
+          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: 'rgba(255,255,255,0.65)' }}>800M · CORPUS CHRISTI ISLANDERS</span>
         </motion.div>
       </div>
     </section>

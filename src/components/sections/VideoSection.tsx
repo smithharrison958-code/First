@@ -44,8 +44,8 @@ export default function VideoSection() {
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 1.2, delay: 0.3 }}
         >
-          <div style={{ width: 24, height: '1px', background: 'rgba(255,255,255,0.2)' }} />
-          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: 'rgba(255,255,255,0.35)' }}>RACE FILM</span>
+          <div style={{ width: 24, height: '1px', background: 'rgba(255,255,255,0.35)' }} />
+          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: 'rgba(255,255,255,0.6)' }}>RACE FILM</span>
         </motion.div>
 
         {/* Headline */}
@@ -64,7 +64,7 @@ export default function VideoSection() {
               letterSpacing: '-0.01em',
             }}>
               WATCH<br />
-              <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(255,255,255,0.3)' }}>DILLON RUN</span>
+              <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(255,255,255,0.55)' }}>DILLON RUN</span>
             </h2>
           </motion.div>
         </div>
@@ -103,7 +103,7 @@ export default function VideoSection() {
                 width: 72,
                 height: 72,
                 borderRadius: '50%',
-                border: '1px solid rgba(255,255,255,0.35)',
+                border: '1px solid rgba(255,255,255,0.55)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -118,7 +118,7 @@ export default function VideoSection() {
                 }} />
               </div>
               <div style={{ textAlign: 'left' }}>
-                <p style={{ fontSize: '11px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.5)', marginBottom: '0.4rem' }}>
+                <p style={{ fontSize: '11px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.7)', marginBottom: '0.4rem' }}>
                   {YOUTUBE_URL ? '2025 SEASON HIGHLIGHTS' : 'HIGHLIGHTS COMING SOON'}
                 </p>
                 <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.85)', letterSpacing: '0.05em' }}>

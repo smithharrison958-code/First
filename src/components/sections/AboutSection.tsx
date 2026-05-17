@@ -109,7 +109,7 @@ export default function AboutSection() {
             transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
           >
             {/* Very small label — stark contrast with what follows */}
-            <p style={{ fontSize: '9px', letterSpacing: '0.44em', color: '#bbb', marginBottom: '3vh' }}>
+            <p style={{ fontSize: '9px', letterSpacing: '0.44em', color: '#777', marginBottom: '3vh' }}>
               IN HIS OWN WORDS
             </p>
 
@@ -137,7 +137,7 @@ export default function AboutSection() {
             animate={storyIn ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: 0.18 }}
           >
-            <p style={{ fontSize: '0.78rem', color: '#888', lineHeight: 2.1, marginBottom: '4vh' }}>
+            <p style={{ fontSize: '0.78rem', color: '#555', lineHeight: 2.1, marginBottom: '4vh' }}>
               Born with a fire for competition, Dillon Smith arrived at Corpus Christi University with one goal: compete at the highest level. A 1:47.3 personal best, back-to-back NCAA appearances, and conference titles earned — Dillon represents the character and drive that makes brands take notice.
             </p>
 
@@ -153,7 +153,7 @@ export default function AboutSection() {
               }}>
                 1:47.3
               </p>
-              <p style={{ fontSize: '9px', letterSpacing: '0.38em', color: '#bbb' }}>
+              <p style={{ fontSize: '9px', letterSpacing: '0.38em', color: '#777' }}>
                 PERSONAL BEST · 800M
               </p>
             </div>

@@ -30,10 +30,10 @@ export default function SponsorshipSection() {
           animate={heroIn ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#999', marginBottom: '2.5rem' }}>PARTNERSHIP</p>
+          <p style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#666', marginBottom: '2.5rem' }}>PARTNERSHIP</p>
           <div>
             <span style={{ fontFamily: 'var(--font-oswald)', fontWeight: 900, fontSize: 'clamp(2.5rem, 6vw, 6rem)', color: '#0A0A0A', display: 'block', lineHeight: 0.9 }}>INVEST IN</span>
-            <span style={{ fontFamily: 'var(--font-oswald)', fontWeight: 900, fontSize: 'clamp(2.5rem, 6vw, 6rem)', color: 'transparent', WebkitTextStroke: '1px rgba(0,0,0,0.22)', display: 'block', lineHeight: 0.9 }}>THE FUTURE</span>
+            <span style={{ fontFamily: 'var(--font-oswald)', fontWeight: 900, fontSize: 'clamp(2.5rem, 6vw, 6rem)', color: 'transparent', WebkitTextStroke: '1px rgba(0,0,0,0.45)', display: 'block', lineHeight: 0.9 }}>THE FUTURE</span>
           </div>
           <p style={{ fontSize: '0.82rem', color: '#666', lineHeight: 1.9, marginTop: '2.5rem', maxWidth: '340px' }}>
             Dillon Smith represents the next generation of elite NCAA middle-distance running. Align your brand with discipline, speed, and authentic athletic excellence.
@@ -76,10 +76,10 @@ export default function SponsorshipSection() {
               {p.n}
             </div>
             <div style={{ flexShrink: 0 }}>
-              <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: '#bbb', marginBottom: '0.5rem' }}>{p.n}</p>
+              <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: '#777', marginBottom: '0.5rem' }}>{p.n}</p>
               <h3 style={{ fontFamily: 'var(--font-oswald)', fontWeight: 700, fontSize: 'clamp(1rem, 2vw, 1.4rem)', color: '#0A0A0A', letterSpacing: '0.06em' }}>{p.title}</h3>
             </div>
-            <p style={{ fontSize: '0.8rem', color: '#888', lineHeight: 1.9, maxWidth: '400px' }}>{p.body}</p>
+            <p style={{ fontSize: '0.8rem', color: '#555', lineHeight: 1.9, maxWidth: '400px' }}>{p.body}</p>
           </motion.div>
         ))}
       </div>
@@ -90,7 +90,7 @@ export default function SponsorshipSection() {
           style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '5vh' }}
           initial={{ opacity: 0 }} animate={ctaIn ? { opacity: 1 } : {}} transition={{ duration: 1 }}>
           <div style={{ width: 24, height: '1px', background: 'rgba(0,0,0,0.18)' }} />
-          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#bbb' }}>READY TO COLLABORATE?</span>
+          <span style={{ fontSize: '9px', letterSpacing: '0.45em', color: '#777' }}>READY TO COLLABORATE?</span>
         </motion.div>
         <motion.a
           href="#contact"
@@ -111,10 +111,10 @@ export default function SponsorshipSection() {
           whileHover={{ opacity: 0.45 }}
         >
           LET&apos;S<br />
-          <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(0,0,0,0.2)' }}>TALK</span>
+          <span style={{ color: 'transparent', WebkitTextStroke: '1px rgba(0,0,0,0.45)' }}>TALK</span>
         </motion.a>
         <motion.p
-          style={{ fontSize: '11px', color: '#bbb', letterSpacing: '0.22em', marginTop: '3vh' }}
+          style={{ fontSize: '11px', color: '#666', letterSpacing: '0.22em', marginTop: '3vh' }}
           initial={{ opacity: 0 }} animate={ctaIn ? { opacity: 1 } : {}} transition={{ duration: 1, delay: 0.5 }}>
           dillonsmith.athlete@gmail.com
         </motion.p>
