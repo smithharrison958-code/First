@@ -35,13 +35,13 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
   useEffect(() => {
     // Initialise Lenis with smooth defaults appropriate for a cinematic site
     const lenis = new Lenis({
-      duration: 0.9,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 0.75,
+      easing: (t: number) => 1 - Math.pow(1 - t, 3),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 1.1,
-      touchMultiplier: 1.8,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.5,
     })
 
     lenisRef.current = lenis

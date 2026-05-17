@@ -51,11 +51,11 @@ export default function Navbar() {
         className="fixed top-0 left-0 right-0 z-50"
         style={{
           backgroundColor: scrolled
-            ? "rgba(5,5,5,0.82)"
+            ? "rgba(248,248,245,0.92)"
             : "transparent",
           backdropFilter: scrolled ? "blur(16px)" : "none",
           borderBottom: scrolled
-            ? "1px solid rgba(0,212,255,0.08)"
+            ? "1px solid rgba(0,0,0,0.08)"
             : "1px solid transparent",
           transition:
             "background-color 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease",
@@ -89,7 +89,7 @@ export default function Navbar() {
                 fontSize: "1.75rem",
                 fontWeight: 900,
                 color: "transparent",
-                WebkitTextStroke: "1.5px #00D4FF",
+                WebkitTextStroke: "1.5px #0A0A0A",
                 textShadow:
                   "0 0 14px rgba(0,212,255,0.6), 0 0 40px rgba(0,212,255,0.25)",
                 letterSpacing: "0.05em",
@@ -130,8 +130,8 @@ export default function Navbar() {
               className="hidden md:flex items-center"
               style={{
                 padding: "0.5rem 1.25rem",
-                border: "1px solid #00D4FF",
-                color: "#00D4FF",
+                border: "1px solid rgba(0,0,0,0.5)",
+                color: "#0A0A0A",
                 fontFamily: "'Oswald', sans-serif",
                 fontSize: "0.7rem",
                 fontWeight: 600,
@@ -162,9 +162,9 @@ export default function Navbar() {
               title={isRaceDay ? "Exit Race Day Mode" : "Race Day Mode"}
               aria-label="Toggle Race Day Mode"
               style={{
-                background: isRaceDay ? "#00D4FF" : "transparent",
-                border: "1px solid rgba(0,212,255,0.5)",
-                color: isRaceDay ? "#050505" : "#00D4FF",
+                background: isRaceDay ? "#0A0A0A" : "transparent",
+                border: "1px solid rgba(0,0,0,0.2)",
+                color: isRaceDay ? "#F8F8F5" : "#0A0A0A",
                 padding: "0.35rem 0.65rem",
                 fontSize: "0.6rem",
                 fontWeight: 700,
@@ -203,7 +203,7 @@ export default function Navbar() {
                   position: "absolute",
                   height: 1.5,
                   width: 22,
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: "#0A0A0A",
                   borderRadius: 2,
                   display: "block",
                 }}
@@ -219,7 +219,7 @@ export default function Navbar() {
                   position: "absolute",
                   height: 1.5,
                   width: 22,
-                  backgroundColor: "#FFFFFF",
+                  backgroundColor: "#0A0A0A",
                   borderRadius: 2,
                   display: "block",
                 }}
@@ -262,7 +262,7 @@ export default function Navbar() {
                 height: 300,
                 borderRadius: "50%",
                 background:
-                  "radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%)",
+                  "radial-gradient(circle, rgba(0,0,0,0.08) 0%, transparent 70%)",
                 pointerEvents: "none",
               }}
             />
@@ -282,7 +282,7 @@ export default function Navbar() {
                   fontFamily: "'Oswald', 'Impact', sans-serif",
                   fontSize: "clamp(2rem, 8vw, 3.5rem)",
                   fontWeight: 700,
-                  color: "#FFFFFF",
+                  color: "#0A0A0A",
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
                   textAlign: "center",
@@ -294,7 +294,7 @@ export default function Navbar() {
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLButtonElement).style.color =
-                    "#FFFFFF";
+                    "#0A0A0A";
                 }}
               >
                 {link.label}
@@ -314,8 +314,8 @@ export default function Navbar() {
               style={{
                 marginTop: "1rem",
                 padding: "0.75rem 2rem",
-                border: "1px solid #00D4FF",
-                color: "#00D4FF",
+                border: "1px solid rgba(0,0,0,0.5)",
+                color: "#0A0A0A",
                 fontFamily: "'Oswald', sans-serif",
                 fontSize: "0.8rem",
                 fontWeight: 600,
