@@ -1,371 +1,123 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { useRef } from 'react'
 import Image from 'next/image'
+import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 
-/* ─────────────────────────────────────────────
-   Types
-───────────────────────────────────────────── */
-
-interface StatItem {
-  value: string
-  numericValue: number | null
-  /** For non-numeric stats, just reveal the text */
-  isText: boolean
-  label: string
-  suffix?: string
-}
-
-/* ─────────────────────────────────────────────
-   Data
-───────────────────────────────────────────── */
-
-const STATS: StatItem[] = [
-  { value: '1:47.3', numericValue: null, isText: true, label: 'Personal Best 800M' },
-  { value: '3×', numericValue: 3, isText: false, label: 'Conference Champion', suffix: '×' },
-  { value: '14', numericValue: 14, isText: false, label: 'Race Wins' },
-  { value: '2', numericValue: 2, isText: false, label: 'NCAA Appearances' },
-]
-
-/* ─────────────────────────────────────────────
-   CountUp hook
-───────────────────────────────────────────── */
-
-function useCountUp(target: number, duration = 1600, active = false) {
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    if (!active) return
-    let start: number | null = null
-    let raf: number
-
-    const step = (timestamp: number) => {
-      if (!start) start = timestamp
-      const progress = Math.min((timestamp - start) / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 3) // cubic ease-out
-      setCount(Math.floor(eased * target))
-      if (progress < 1) raf = requestAnimationFrame(step)
-    }
-
-    raf = requestAnimationFrame(step)
-    return () => cancelAnimationFrame(raf)
-  }, [target, duration, active])
-
-  return count
-}
-
-/* ─────────────────────────────────────────────
-   Stat Card
-───────────────────────────────────────────── */
-
-function StatCard({ stat, index, sectionActive }: { stat: StatItem; index: number; sectionActive: boolean }) {
-  const count = useCountUp(stat.numericValue ?? 0, 1400, !stat.isText && sectionActive)
-
-  const displayValue = stat.isText
-    ? stat.value
-    : `${count}${stat.suffix ?? ''}`
+function FullPhotoMoment() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], [-80, 80])
+  const inView = useInView(ref, { once: true, amount: 0.2 })
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      animate={sectionActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
-      transition={{ duration: 0.55, delay: 0.15 * index, ease: [0.22, 1, 0.36, 1] }}
-      className="flex flex-col items-center justify-center p-6 text-center"
-      style={{
-        backgroundColor: 'rgba(13, 13, 20, 0.8)',
-        border: '1px solid rgba(0, 212, 255, 0.18)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-      }}
-    >
-      <span
-        className="text-4xl font-bold leading-none mb-2"
-        style={{
-          fontFamily: 'var(--font-oswald), Impact, Arial Narrow, sans-serif',
-          color: '#00D4FF',
-        }}
-      >
-        {displayValue}
-      </span>
-      <span
-        className="text-xs tracking-widest uppercase font-medium"
-        style={{ color: '#9090A8', letterSpacing: '0.2em' }}
-      >
-        {stat.label}
-      </span>
-    </motion.div>
+    <div ref={ref} className="relative overflow-hidden" style={{ height: '100vh' }}>
+      <motion.div className="absolute inset-0" style={{ y }}>
+        <Image
+          src="/images/dillon-studio-thumbsup.jpg"
+          alt="Dillon Smith"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'top center', scale: '1.1' }}
+        />
+      </motion.div>
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #000 0%, rgba(0,0,0,0.3) 50%, #000 100%)' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #000 0%, transparent 50%)' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, #000 0%, transparent 30%)' }} />
+
+      {/* Text overlay */}
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: '8vh', paddingLeft: '8vw' }}>
+        <motion.p
+          style={{ fontSize: '10px', letterSpacing: '0.45em', color: '#00D4FF', marginBottom: '1.5rem' }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          THE ATHLETE
+        </motion.p>
+        <motion.div
+          initial={{ clipPath: 'inset(0 100% 0 0)' }}
+          animate={inView ? { clipPath: 'inset(0 0% 0 0)' } : {}}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+        >
+          <span style={{
+            fontFamily: 'var(--font-oswald)',
+            fontWeight: 900,
+            fontSize: 'clamp(2.5rem, 7vw, 7rem)',
+            color: '#fff',
+            display: 'block',
+            lineHeight: 0.9,
+          }}>BUILT FOR</span>
+          <span style={{
+            fontFamily: 'var(--font-oswald)',
+            fontWeight: 900,
+            fontSize: 'clamp(2.5rem, 7vw, 7rem)',
+            color: 'transparent',
+            WebkitTextStroke: '1px rgba(255,255,255,0.45)',
+            display: 'block',
+            lineHeight: 0.9,
+          }}>GREATNESS</span>
+        </motion.div>
+      </div>
+    </div>
   )
 }
 
-/* ─────────────────────────────────────────────
-   Main Component
-───────────────────────────────────────────── */
-
-export default function AboutSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const leftRef = useRef<HTMLDivElement>(null)
-  const accentRef = useRef<HTMLDivElement>(null)
-  const rightRef = useRef<HTMLDivElement>(null)
-  const statsRef = useRef<HTMLDivElement>(null)
-
-  const leftInView = useInView(leftRef, { once: true, amount: 0.3 })
-  const accentInView = useInView(accentRef, { once: true, amount: 0.3 })
-  const rightInView = useInView(rightRef, { once: true, amount: 0.3 })
-  const statsInView = useInView(statsRef, { once: true, amount: 0.3 })
+function StoryBlock() {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.3 })
 
   return (
-    <section
-      id="about"
-      ref={sectionRef}
-      className="relative overflow-hidden section-padding"
-      style={{ backgroundColor: '#0A0A0F' }}
-    >
-      {/* ── Left-side blue gradient accent ── */}
-      <div
-        aria-hidden
-        className="absolute inset-y-0 left-0 w-1/3 pointer-events-none"
-        style={{
-          background:
-            'linear-gradient(90deg, rgba(0,212,255,0.05) 0%, transparent 100%)',
-        }}
-      />
+    <div ref={ref} id="about" style={{ background: '#000', paddingTop: '12vh', paddingBottom: '12vh' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8vw', paddingLeft: '8vw', paddingRight: '8vw', alignItems: 'start' }}
+        className="grid-cols-1 md:grid-cols-2">
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12">
-        {/* ── Two-column layout ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+        {/* Left — giant quote mark + text */}
+        <motion.div
+          initial={{ opacity: 0, x: -40 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div style={{ fontFamily: 'var(--font-oswald)', fontSize: '8rem', color: '#00D4FF', lineHeight: 0.6, marginBottom: '1.5rem', opacity: 0.6 }}>&ldquo;</div>
+          <p style={{ fontSize: 'clamp(1rem, 1.8vw, 1.4rem)', color: 'rgba(255,255,255,0.8)', lineHeight: 1.8, fontWeight: 300 }}>
+            I don&apos;t run to win races. I run to find out what I&apos;m capable of — and every race answers that question differently.
+          </p>
+          <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '3rem 0' }} />
+          <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.9 }}>
+            Born and raised with a fire for competition, Dillon Smith arrived at Corpus Christi University with one goal: to compete at the highest level. Since then, he has posted a 1:47.3 personal best, claimed conference titles, and earned back-to-back NCAA appearances — all while representing the Islanders with the kind of character that makes brands take notice.
+          </p>
+        </motion.div>
 
-          {/* ── LEFT: Real photo column ── */}
-          <div className="relative">
-            {/* Primary portrait */}
-            <motion.div
-              ref={leftRef}
-              initial={{ opacity: 0, x: -56 }}
-              animate={leftInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -56 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="relative w-full overflow-hidden lg:h-[600px] aspect-[3/4] lg:aspect-auto"
-              style={{ backgroundColor: '#0D0D14' }}
-            >
-              {/* Actual photo with slow zoom-in reveal */}
-              <motion.div
-                className="absolute inset-0"
-                initial={{ scale: 1.08 }}
-                animate={leftInView ? { scale: 1.0 } : { scale: 1.08 }}
-                transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <Image
-                  src="/images/dillon-headshot.jpg"
-                  fill
-                  alt="Dillon Smith — Corpus Christi Islanders athlete portrait"
-                  style={{ objectFit: 'cover', objectPosition: 'top center' }}
-                />
-              </motion.div>
-
-              {/* Bottom gradient overlay */}
-              <div
-                aria-hidden
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    'linear-gradient(to top, rgba(5,5,5,0.9) 0%, rgba(5,5,5,0.4) 40%, transparent 70%)',
-                }}
-              />
-
-              {/* Corner accents — top-left */}
-              <span
-                aria-hidden
-                className="absolute pointer-events-none"
-                style={{
-                  width: '40px',
-                  height: '1px',
-                  backgroundColor: '#00D4FF',
-                  top: '20px',
-                  left: '20px',
-                }}
-              />
-              <span
-                aria-hidden
-                className="absolute pointer-events-none"
-                style={{
-                  width: '1px',
-                  height: '40px',
-                  backgroundColor: '#00D4FF',
-                  top: '20px',
-                  left: '20px',
-                }}
-              />
-
-              {/* Corner accents — bottom-right */}
-              <span
-                aria-hidden
-                className="absolute pointer-events-none"
-                style={{
-                  width: '40px',
-                  height: '1px',
-                  backgroundColor: '#00D4FF',
-                  bottom: '20px',
-                  right: '20px',
-                }}
-              />
-              <span
-                aria-hidden
-                className="absolute pointer-events-none"
-                style={{
-                  width: '1px',
-                  height: '40px',
-                  backgroundColor: '#00D4FF',
-                  bottom: '20px',
-                  right: '20px',
-                }}
-              />
-
-              {/* Overlaid name text — slides up on reveal */}
-              <motion.div
-                className="absolute bottom-0 left-0 right-0 px-6 pb-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={leftInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.7, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <p
-                  className="font-bold leading-none mb-1"
-                  style={{
-                    fontFamily: 'var(--font-oswald), Impact, Arial Narrow, sans-serif',
-                    fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-                    color: '#ffffff',
-                    letterSpacing: '0.04em',
-                  }}
-                >
-                  DILLON SMITH
-                </p>
-                <p
-                  className="text-xs tracking-widest font-medium uppercase"
-                  style={{ color: '#00D4FF', letterSpacing: '0.22em' }}
-                >
-                  800M · CORPUS CHRISTI UNIVERSITY
-                </p>
-              </motion.div>
-            </motion.div>
-
-            {/* Secondary accent photo */}
-            <motion.div
-              ref={accentRef}
-              initial={{ opacity: 0, x: 40 }}
-              animate={accentInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
-              transition={{ duration: 0.75, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="relative mt-4 ml-auto w-1/2 aspect-[3/4] overflow-hidden"
-              style={{
-                border: '1px solid rgba(0,212,255,0.25)',
-                boxShadow: '0 0 30px rgba(0,212,255,0.12), 0 0 60px rgba(0,212,255,0.06)',
-                backgroundColor: '#0D0D14',
-              }}
-            >
-              <Image
-                src="/images/dillon-studio-pointing.jpg"
-                fill
-                alt="Dillon Smith — studio portrait pointing at camera"
-                style={{ objectFit: 'cover', objectPosition: 'center top' }}
-              />
-              {/* Subtle dark tint to tie into dark theme */}
-              <div
-                aria-hidden
-                className="absolute inset-0 pointer-events-none"
-                style={{ background: 'rgba(5,5,5,0.15)' }}
-              />
-            </motion.div>
+        {/* Right — asymmetric image stack */}
+        <motion.div
+          className="relative hidden md:block"
+          style={{ height: '65vh' }}
+          initial={{ opacity: 0, x: 40 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+        >
+          {/* Main image */}
+          <div style={{ position: 'absolute', top: 0, right: 0, width: '72%', height: '80%', overflow: 'hidden' }}>
+            <Image src="/images/dillon-relay-team.jpg" alt="Dillon with team" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)' }} />
           </div>
-
-          {/* ── RIGHT: Text content ── */}
-          <motion.div
-            ref={rightRef}
-            initial={{ opacity: 0, x: 56 }}
-            animate={rightInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 56 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col gap-6"
-          >
-            {/* Section label */}
-            <p
-              className="text-xs tracking-widest font-medium uppercase"
-              style={{ color: '#00D4FF', letterSpacing: '0.3em' }}
-            >
-              The Athlete
-            </p>
-
-            {/* Heading */}
-            <h2
-              className="font-bold leading-tight"
-              style={{
-                fontFamily: 'var(--font-oswald), Impact, Arial Narrow, sans-serif',
-                fontSize: 'clamp(2.25rem, 4vw, 3.5rem)',
-                color: '#ffffff',
-              }}
-            >
-              Born to Run.
-              <br />
-              Built to Win.
-            </h2>
-
-            {/* Bio paragraphs */}
-            <div className="flex flex-col gap-4">
-              <p className="text-sm leading-relaxed" style={{ color: '#9090A8' }}>
-                Growing up in Corpus Christi, Texas, Dillon Smith discovered his love for
-                running at age 12. What began as a neighborhood chase became a lifelong
-                pursuit of excellence — a hunger that no finish line could fully satisfy.
-              </p>
-              <p className="text-sm leading-relaxed" style={{ color: '#9090A8' }}>
-                Now competing at the NCAA level for Corpus Christi University, Dillon
-                brings the same raw intensity from those early days to every race, every
-                practice, every moment on the track. When the gun fires, everything else
-                disappears.
-              </p>
-              <p className="text-sm leading-relaxed" style={{ color: '#9090A8' }}>
-                His relentless training regimen — 70 miles per week, ice baths, film
-                study — reflects a mind as sharp as his stride. Dillon doesn&apos;t just
-                train to be fast. He trains to be unbeatable.
-              </p>
-            </div>
-
-            {/* Quote block */}
-            <div
-              className="mt-2 pl-5 relative"
-              style={{ borderLeft: '2px solid rgba(0,212,255,0.4)' }}
-            >
-              <span
-                aria-hidden
-                className="absolute -top-3 -left-2 font-bold leading-none select-none"
-                style={{
-                  fontFamily: 'Georgia, serif',
-                  fontSize: '4rem',
-                  color: '#00D4FF',
-                  opacity: 0.5,
-                  lineHeight: 1,
-                }}
-              >
-                &ldquo;
-              </span>
-              <p
-                className="italic text-base leading-relaxed pt-4"
-                style={{ color: '#C8C8D8' }}
-              >
-                I don&apos;t run to compete. I run to become something greater.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* ── Stats row ── */}
-        <div ref={statsRef} className="mt-16 lg:mt-24">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {STATS.map((stat, i) => (
-              <StatCard
-                key={stat.label}
-                stat={stat}
-                index={i}
-                sectionActive={statsInView}
-              />
-            ))}
+          {/* Offset image */}
+          <div style={{ position: 'absolute', bottom: 0, left: 0, width: '52%', height: '55%', overflow: 'hidden', border: '1px solid rgba(0,212,255,0.15)' }}>
+            <Image src="/images/dillon-team-pyramid.jpg" alt="Team" fill style={{ objectFit: 'cover', objectPosition: 'center top' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)' }} />
           </div>
-        </div>
+          {/* Blue accent line */}
+          <div style={{ position: 'absolute', top: '10%', left: '68%', width: '1px', height: '30%', background: 'linear-gradient(to bottom, transparent, #00D4FF, transparent)' }} />
+        </motion.div>
       </div>
-    </section>
+    </div>
+  )
+}
+
+export default function AboutSection() {
+  return (
+    <>
+      <FullPhotoMoment />
+      <StoryBlock />
+    </>
   )
 }

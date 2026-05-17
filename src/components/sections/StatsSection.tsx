@@ -1,487 +1,122 @@
-"use client";
+'use client'
 
-import {
-  motion,
-  useInView,
-  useScroll,
-  useTransform,
-  useSpring,
-} from "framer-motion";
-import { useRef } from "react";
-import Image from "next/image";
+import { useRef } from 'react'
+import Image from 'next/image'
+import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 
-/* ─────────────────────────────────────────────
-   Data
-───────────────────────────────────────────── */
-
-const raceEvents = [
-  {
-    year: "2023",
-    event: "Conference Championship",
-    time: "1:49.2",
-    result: "Bronze Medal",
-  },
-  {
-    year: "2023",
-    event: "Regional Qualifier",
-    time: "1:48.8",
-    result: "Top 8 Finish",
-  },
-  {
-    year: "2024",
-    event: "Conference Championship",
-    time: "1:47.9",
-    result: "Silver Medal",
-  },
-  {
-    year: "2024",
-    event: "NCAA Qualifier",
-    time: "1:48.1",
-    result: "Qualified for Nationals",
-  },
-  {
-    year: "2025",
-    event: "Conference Championship",
-    time: "1:47.3",
-    result: "Gold Medal — Personal Best",
-  },
-  {
-    year: "2025",
-    event: "NCAA Championship",
-    time: "1:47.6",
-    result: "Top 12 Nationally",
-  },
-];
-
-const statCards = [
-  { value: "800M", label: "Primary Distance" },
-  { value: "1:47.3", label: "Personal Best" },
-  { value: "70 mi/wk", label: "Training Volume" },
-  { value: "Top 12", label: "National Ranking" },
-];
-
-const splits = [
-  { label: "First 400M", time: "53.1s", pct: 49.5 },
-  { label: "Second 400M", time: "54.2s", pct: 50.5 },
-];
-
-/* ─────────────────────────────────────────────
-   Sub-components
-───────────────────────────────────────────── */
-
-function SplitBar({
-  label,
-  time,
-  pct,
-  delay,
-}: {
-  label: string;
-  time: string;
-  pct: number;
-  delay: number;
+function StatLine({ value, label, align = 'left', outline = false, color = 'white', glow = false, delay = 0 }: {
+  value: string; label: string; align?: 'left' | 'right' | 'center'
+  outline?: boolean; color?: string; glow?: boolean; delay?: number
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.6 });
-
-  return (
-    <div ref={ref} className="mb-6">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-white/60 uppercase tracking-wider font-medium">
-          {label}
-        </span>
-        <span
-          className="text-sm font-bold"
-          style={{ color: "#00D4FF" }}
-        >
-          {time}
-        </span>
-      </div>
-      <div
-        className="relative h-3 rounded-full overflow-hidden"
-        style={{ background: "rgba(255,255,255,0.06)" }}
-      >
-        <motion.div
-          className="absolute inset-y-0 left-0 rounded-full"
-          style={{
-            background:
-              "linear-gradient(90deg, #00D4FF, #0099CC)",
-            boxShadow: "0 0 16px rgba(0,212,255,0.55)",
-          }}
-          initial={{ width: "0%" }}
-          animate={inView ? { width: `${pct}%` } : { width: "0%" }}
-          transition={{
-            duration: 1.1,
-            delay,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function TimelineEvent({
-  item,
-  index,
-  isLast,
-  horizontal,
-}: {
-  item: (typeof raceEvents)[0];
-  index: number;
-  isLast: boolean;
-  horizontal: boolean;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.5 });
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.3 })
+  const alignClass = align === 'right' ? 'text-right pr-[8vw]' : align === 'center' ? 'text-center' : 'text-left pl-[8vw]'
 
   return (
     <motion.div
       ref={ref}
-      className={
-        horizontal
-          ? "flex flex-col items-center relative flex-1"
-          : "flex items-start gap-4 relative"
-      }
-      initial={{ opacity: 0, y: horizontal ? 20 : 0, x: horizontal ? 0 : -16 }}
-      animate={inView ? { opacity: 1, y: 0, x: 0 } : {}}
-      transition={{ duration: 0.55, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
+      className={`relative ${alignClass} py-10`}
+      initial={{ opacity: 0, y: 40 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay }}
     >
-      {/* Dot */}
-      <div
-        className={`relative z-10 flex-shrink-0 ${horizontal ? "mb-3" : "mt-1"}`}
-      >
-        <div
-          className="w-4 h-4 rounded-full border-2 flex items-center justify-center"
-          style={{
-            borderColor: "#00D4FF",
-            background: "#050505",
-            boxShadow: "0 0 10px rgba(0,212,255,0.5)",
-          }}
-        >
-          <div
-            className="w-1.5 h-1.5 rounded-full"
-            style={{ background: "#00D4FF" }}
-          />
-        </div>
-      </div>
-
-      {/* Text */}
-      <div className={`${horizontal ? "text-center px-1" : "pb-8"} min-w-0`}>
-        <p
-          className="text-xs font-bold uppercase tracking-widest mb-0.5"
-          style={{ color: "#00D4FF" }}
-        >
-          {item.year}
-        </p>
-        <p className="text-xs text-white/50 mb-1 leading-tight">{item.event}</p>
-        <p
-          className="text-lg font-bold mb-0.5"
-          style={{ fontFamily: "var(--font-oswald)", color: "#00D4FF" }}
-        >
-          {item.time}
-        </p>
-        <p className="text-xs text-white/40 leading-tight">{item.result}</p>
-      </div>
-
-      {/* Connector line (vertical) rendered inside non-last items */}
-      {!horizontal && !isLast && (
-        <div
-          className="absolute left-[7px] top-5 bottom-0 w-px"
-          style={{ background: "rgba(0,212,255,0.2)" }}
+      {align === 'left' && (
+        <motion.div
+          className="absolute left-[6.5vw] top-1/2 -translate-y-1/2 w-px h-20"
+          style={{ background: '#00D4FF', opacity: 0.5 }}
+          initial={{ scaleY: 0 }}
+          animate={inView ? { scaleY: 1 } : {}}
+          transition={{ duration: 0.6, delay: delay + 0.2 }}
         />
       )}
-    </motion.div>
-  );
-}
-
-/* ─────────────────────────────────────────────
-   Animated horizontal line (desktop)
-───────────────────────────────────────────── */
-
-function HorizontalLine() {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start 0.8", "end 0.4"],
-  });
-  const scaleX = useSpring(scrollYProgress, { stiffness: 60, damping: 20 });
-
-  return (
-    <div ref={ref} className="relative h-px mx-8 mb-0" style={{ background: "rgba(255,255,255,0.06)" }}>
       <motion.div
-        className="absolute inset-0 origin-left"
         style={{
-          scaleX,
-          background: "linear-gradient(90deg, #00D4FF, rgba(0,212,255,0.3))",
-          boxShadow: "0 0 8px rgba(0,212,255,0.4)",
+          fontFamily: 'var(--font-oswald)',
+          fontWeight: 900,
+          fontSize: 'clamp(4rem, 17vw, 15rem)',
+          lineHeight: 0.85,
+          color: outline ? 'transparent' : color,
+          WebkitTextStroke: outline ? '1px rgba(255,255,255,0.22)' : undefined,
+          textShadow: glow ? '0 0 80px rgba(0,212,255,0.5)' : undefined,
         }}
-      />
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────────
-   Cinematic Photo Banner
-───────────────────────────────────────────── */
-
-function PhotoBanner() {
-  const bannerRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(bannerRef, { once: true, amount: 0.25 });
-
-  // Parallax: image shifts up 40px as user scrolls past
-  const { scrollYProgress } = useScroll({
-    target: bannerRef,
-    offset: ["start end", "end start"],
-  });
-  const imageY = useTransform(scrollYProgress, [0, 1], [0, -40]);
-
-  return (
-    <div
-      ref={bannerRef}
-      className="relative w-full overflow-hidden mb-20 h-[280px] md:h-[360px]"
-    >
-      {/* Parallax image */}
-      <motion.div
-        className="absolute inset-0 w-full"
-        style={{ y: imageY, height: "calc(100% + 40px)", top: 0 }}
+        initial={{ clipPath: 'inset(0 100% 0 0)' }}
+        animate={inView ? { clipPath: 'inset(0 0% 0 0)' } : {}}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: delay + 0.1 }}
       >
-        <Image
-          src="/images/dillon-race.jpg"
-          alt="Dillon Smith mid-race"
-          fill
-          style={{ objectFit: "cover", objectPosition: "center 30%" }}
-          sizes="100vw"
-        />
+        {value}
       </motion.div>
-
-      {/* Dark vignette overlay */}
-      <div
-        className="absolute inset-0 z-10 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(to right, rgba(5,5,5,0.8) 0%, rgba(5,5,5,0.3) 50%, rgba(5,5,5,0.8) 100%)",
-        }}
-      />
-
-      {/* Center text: PB number + label */}
-      <div className="absolute inset-0 z-20 flex flex-col items-center justify-center">
-        <motion.p
-          className="font-bold leading-none"
-          style={{
-            fontFamily: "var(--font-oswald)",
-            fontSize: "clamp(4rem, 12vw, 8rem)",
-            color: "#00D4FF",
-            textShadow: "0 0 60px rgba(0,212,255,0.55), 0 0 120px rgba(0,212,255,0.25)",
-            lineHeight: 1,
-          }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={inView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-        >
-          1:47.3
-        </motion.p>
-        <motion.p
-          className="text-white text-xs md:text-sm uppercase tracking-widest mt-3 font-semibold"
-          initial={{ opacity: 0, y: 8 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        >
-          Personal Best
-        </motion.p>
-      </div>
-    </div>
-  );
+      <motion.p
+        className="text-[10px] tracking-[0.35em] mt-4"
+        style={{ color: 'rgba(255,255,255,0.28)' }}
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.8, delay: delay + 0.5 }}
+      >
+        {label}
+      </motion.p>
+    </motion.div>
+  )
 }
 
-/* ─────────────────────────────────────────────
-   Main Section
-───────────────────────────────────────────── */
+function RaceBanner() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
+  const y = useTransform(scrollYProgress, [0, 1], [-60, 60])
+  const inView = useInView(ref, { once: true, amount: 0.3 })
+
+  return (
+    <div ref={ref} className="relative w-full overflow-hidden" style={{ height: '55vh' }}>
+      <motion.div className="absolute inset-0" style={{ y }}>
+        <Image src="/images/dillon-race.jpg" alt="Dillon racing" fill style={{ objectFit: 'cover', objectPosition: 'center 25%', scale: '1.15' }} />
+      </motion.div>
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, #000 0%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.1) 70%, #000 100%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #000 0%, transparent 40%)' }} />
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, #000 0%, transparent 30%)' }} />
+      <motion.p
+        className="absolute inset-0 flex items-center justify-center text-[10px] tracking-[0.5em]"
+        style={{ color: 'rgba(255,255,255,0.55)' }}
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 1, delay: 0.4 }}
+      >
+        NCAA QUALIFIER · 2025
+      </motion.p>
+    </div>
+  )
+}
 
 export default function StatsSection() {
-  const headerRef = useRef<HTMLDivElement>(null);
-  const headerInView = useInView(headerRef, { once: true, amount: 0.4 });
+  const ref = useRef<HTMLElement>(null)
+  const inView = useInView(ref, { once: true, amount: 0.05 })
 
   return (
-    <section
-      id="performance"
-      className="relative overflow-hidden section-padding"
-      style={{ background: "#050505" }}
-    >
-      {/* Diagonal blue stripe */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(135deg, transparent 30%, rgba(0,212,255,0.05) 50%, transparent 70%)",
-        }}
-      />
-      {/* Subtle grid */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0,212,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,1) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
-
-      <div className="container-athlete relative z-10">
-        {/* ── Header ── */}
-        <div ref={headerRef} className="mb-16 text-center">
-          <motion.p
-            className="text-xs uppercase tracking-widest mb-3 font-semibold"
-            style={{ color: "#00D4FF" }}
-            initial={{ opacity: 0, y: 12 }}
-            animate={headerInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
-          >
-            By the Numbers
-          </motion.p>
-          <motion.h2
-            className="text-4xl md:text-5xl font-bold text-white"
-            style={{ fontFamily: "var(--font-oswald)" }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={headerInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            Race. Perform. Dominate.
-          </motion.h2>
-          <motion.div
-            className="track-line mt-6 mx-auto"
-            style={{ maxWidth: 120 }}
-            initial={{ scaleX: 0 }}
-            animate={headerInView ? { scaleX: 1 } : {}}
-            transition={{ duration: 0.7, delay: 0.2 }}
-          />
-        </div>
-
-        {/* ── Race Timeline ── */}
-        <div className="mb-20">
-          {/* Desktop: horizontal */}
-          <div className="hidden md:block">
-            <HorizontalLine />
-            <div className="flex items-start mt-0 gap-0">
-              {raceEvents.map((ev, i) => (
-                <TimelineEvent
-                  key={i}
-                  item={ev}
-                  index={i}
-                  isLast={i === raceEvents.length - 1}
-                  horizontal
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Mobile: vertical */}
-          <div className="md:hidden flex flex-col">
-            {raceEvents.map((ev, i) => (
-              <TimelineEvent
-                key={i}
-                item={ev}
-                index={i}
-                isLast={i === raceEvents.length - 1}
-                horizontal={false}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* ── Cinematic Photo Banner ── */}
-        <PhotoBanner />
-
-        {/* ── Stat Cards ── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-20">
-          {statCards.map((card, i) => (
-            <StatCard key={card.label} card={card} index={i} />
-          ))}
-        </div>
-
-        {/* ── Split Visualization ── */}
-        <SplitSection />
-      </div>
-    </section>
-  );
-}
-
-function StatCard({
-  card,
-  index,
-}: {
-  card: { value: string; label: string };
-  index: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.4 });
-
-  return (
-    <motion.div
-      ref={ref}
-      className="card-dark hover-lift p-6 flex flex-col items-center text-center"
-      style={{
-        borderTop: "2px solid #00D4FF",
-        background: "rgba(13,13,20,0.9)",
-      }}
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{
-        y: -6,
-        boxShadow: "0 20px 60px rgba(0,212,255,0.15)",
-        transition: { duration: 0.25 },
-      }}
-    >
-      <p
-        className="text-3xl md:text-4xl font-bold mb-2"
-        style={{
-          fontFamily: "var(--font-oswald)",
-          color: "#00D4FF",
-        }}
+    <section id="performance" ref={ref} style={{ background: '#000', minHeight: '100vh' }}>
+      <motion.div
+        className="flex flex-col items-center pt-28 pb-12"
+        initial={{ opacity: 0 }}
+        animate={inView ? { opacity: 1 } : {}}
+        transition={{ duration: 1 }}
       >
-        {card.value}
-      </p>
-      <p className="text-xs uppercase tracking-widest text-white/50 font-medium">
-        {card.label}
-      </p>
-    </motion.div>
-  );
-}
+        <p className="text-[10px] tracking-[0.4em]" style={{ color: '#00D4FF' }}>BY THE NUMBERS</p>
+        <div className="mt-4 w-20 h-px" style={{ background: '#00D4FF', opacity: 0.25 }} />
+      </motion.div>
 
-function SplitSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.3 });
+      <StatLine value="1:47.3" label="PERSONAL BEST · 800 METERS" align="left" delay={0} />
+      <StatLine value="3×" label="CONFERENCE CHAMPION" align="right" outline delay={0.1} />
 
-  return (
-    <motion.div
-      ref={ref}
-      className="card-dark p-8 md:p-10"
-      style={{ background: "rgba(13,13,20,0.9)" }}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-1 h-6 rounded-full" style={{ background: "#00D4FF" }} />
-        <h3
-          className="text-xl md:text-2xl font-bold text-white"
-          style={{ fontFamily: "var(--font-oswald)" }}
-        >
-          Split Time Breakdown
-        </h3>
-        <span className="text-xs text-white/30 ml-2">(800M Personal Best · 1:47.3)</span>
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
+          style={{ fontFamily: 'var(--font-oswald)', fontWeight: 900, fontSize: 'clamp(5rem, 22vw, 20rem)', color: 'rgba(255,255,255,0.04)', lineHeight: 1 }}>
+          VICTORIES
+        </div>
+        <StatLine value="14" label="CAREER VICTORIES" align="center" delay={0.1} />
       </div>
-      {splits.map((s, i) => (
-        <SplitBar
-          key={s.label}
-          label={s.label}
-          time={s.time}
-          pct={s.pct}
-          delay={i * 0.2}
-        />
-      ))}
-      <p className="text-xs text-white/30 mt-4 text-center">
-        Combined: 107.3s &nbsp;·&nbsp; Even split strategy
-      </p>
-    </motion.div>
-  );
+
+      <RaceBanner />
+
+      <StatLine value="2" label="NCAA APPEARANCES" align="left" color="#00D4FF" glow delay={0} />
+
+      <div className="h-24" />
+    </section>
+  )
 }
