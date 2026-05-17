@@ -4,18 +4,25 @@ import { useRef } from 'react'
 import Image from 'next/image'
 import { motion, useInView } from 'framer-motion'
 
-/* ─── Editorial layout — not a grid.
+/* ─── Editorial sequence layout.
    Each row is a distinct compositional moment.
-   Row 1: Full bleed portrait  (pointing — identity)
-   Row 2: 60/40 split          (race + relay team — energy)
-   Row 3: Full bleed landscape  (thumbsup — confidence)
-   Row 4: Half-width offset     (team pyramid — camaraderie) ─── */
+   Focal points chosen to keep subjects fully visible.
 
-function FullBleedFrame({ src, label, height = '82vh', pos = 'top center', delay = 0 }: {
-  src: string; label: string; height?: string; pos?: string; delay?: number
+   Row 1: Full-bleed portrait 85vh — pointing (identity)
+   Row 2: 55/45 split 56vh — relay team (needs width) + race (single subject)
+   Row 3: Full-bleed 80vh — thumbsup (confidence)
+   Row 4: Full-bleed 55vh — team pyramid (group, needs full width)
+─── */
+
+function FullBleedFrame({
+  src, label, height = '82vh', pos = 'top center',
+  textSide = 'left', delay = 0,
+}: {
+  src: string; label: string; height?: string; pos?: string;
+  textSide?: 'left' | 'right'; delay?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.15 })
+  const inView = useInView(ref, { once: true, amount: 0.12 })
 
   return (
     <motion.div
@@ -27,54 +34,77 @@ function FullBleedFrame({ src, label, height = '82vh', pos = 'top center', delay
     >
       <motion.div
         style={{ position: 'absolute', inset: 0 }}
-        initial={{ scale: 1.05 }}
+        initial={{ scale: 1.04 }}
         animate={inView ? { scale: 1 } : {}}
-        transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
       >
-        <Image src={src} alt={label} fill sizes="100vw" style={{ objectFit: 'cover', objectPosition: pos }} />
+        <Image src={src} alt={label} fill sizes="100vw"
+          style={{ objectFit: 'cover', objectPosition: pos }} />
       </motion.div>
       <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        padding: '4rem 2.5rem 1.5rem',
-        background: 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)',
+        position: 'absolute', bottom: 0,
+        left: textSide === 'left' ? 0 : 'auto',
+        right: textSide === 'right' ? 0 : 'auto',
+        padding: '4rem 2rem 1.5rem',
+        background: `linear-gradient(to top, rgba(0,0,0,0.38) 0%, transparent 100%)`,
+        width: '100%',
       }}>
-        <p style={{ fontSize: '9px', letterSpacing: '0.32em', color: 'rgba(255,255,255,0.55)' }}>{label}</p>
+        <p style={{
+          fontSize: '9px', letterSpacing: '0.32em',
+          color: 'rgba(255,255,255,0.55)',
+          textAlign: textSide,
+        }}>{label}</p>
       </div>
     </motion.div>
   )
 }
 
-function SplitFrame({ left, right }: {
-  left: { src: string; label: string; width: string; height: string; pos?: string };
-  right: { src: string; label: string; width: string; height: string; pos?: string };
-}) {
+function SplitRow() {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.15 })
+  const inView = useInView(ref, { once: true, amount: 0.12 })
+
+  const frames = [
+    {
+      src: '/images/dillon-relay-team.jpg',
+      label: '4×400 · Texas Relays',
+      width: '55%',
+      pos: 'center 35%',  // show athletes from mid-torso up, all four visible
+    },
+    {
+      src: '/images/dillon-race.jpg',
+      label: 'Texas Relays · 800M',
+      width: '45%',
+      pos: 'center 25%',  // runner's face and upper body centred
+    },
+  ]
 
   return (
     <div ref={ref} style={{ display: 'flex', gap: '2px' }}>
-      {[left, right].map((frame, i) => (
+      {frames.map((f, i) => (
         <motion.div
-          key={frame.src}
-          style={{ position: 'relative', width: frame.width, height: frame.height, overflow: 'hidden', flexShrink: 0 }}
+          key={f.src}
+          style={{ position: 'relative', width: f.width, height: '56vh', overflow: 'hidden', flexShrink: 0 }}
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: i * 0.12 }}
+          transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: i * 0.1 }}
         >
           <motion.div
             style={{ position: 'absolute', inset: 0 }}
-            initial={{ scale: 1.05 }}
+            initial={{ scale: 1.04 }}
             animate={inView ? { scale: 1 } : {}}
-            transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: i * 0.08 }}
+            transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: i * 0.06 }}
           >
-            <Image src={frame.src} alt={frame.label} fill sizes="60vw" style={{ objectFit: 'cover', objectPosition: frame.pos || 'center' }} />
+            <Image src={f.src} alt={f.label} fill sizes="60vw"
+              style={{ objectFit: 'cover', objectPosition: f.pos }} />
           </motion.div>
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0,
             padding: '3rem 1.5rem 1.25rem',
             background: 'linear-gradient(to top, rgba(0,0,0,0.38) 0%, transparent 100%)',
           }}>
-            <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.5)' }}>{frame.label}</p>
+            <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.5)' }}>
+              {f.label}
+            </p>
           </div>
         </motion.div>
       ))}
@@ -82,62 +112,45 @@ function SplitFrame({ left, right }: {
   )
 }
 
-function TeamFrame() {
+function TeamRow() {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, amount: 0.2 })
+  const inView = useInView(ref, { once: true, amount: 0.15 })
 
   return (
-    <div ref={ref} style={{ display: 'flex', alignItems: 'stretch', gap: '2px' }}>
-      {/* Wide team photo */}
+    <motion.div
+      ref={ref}
+      style={{ position: 'relative', width: '100%', height: '58vh', overflow: 'hidden' }}
+      initial={{ opacity: 0 }}
+      animate={inView ? { opacity: 1 } : {}}
+      transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
+    >
       <motion.div
-        style={{ position: 'relative', flex: '0 0 72%', height: '48vh', overflow: 'hidden' }}
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1] }}
+        style={{ position: 'absolute', inset: 0 }}
+        initial={{ scale: 1.04 }}
+        animate={inView ? { scale: 1 } : {}}
+        transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
       >
-        <motion.div
-          style={{ position: 'absolute', inset: 0 }}
-          initial={{ scale: 1.05 }}
-          animate={inView ? { scale: 1 } : {}}
-          transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <Image src="/images/dillon-team-pyramid.jpg" alt="Islanders 2025" fill sizes="72vw"
-            style={{ objectFit: 'cover', objectPosition: 'center top' }} />
-        </motion.div>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.38) 0%, transparent 50%)' }} />
-        <p style={{ position: 'absolute', bottom: '1.25rem', left: '1.5rem', fontSize: '9px', letterSpacing: '0.32em', color: 'rgba(255,255,255,0.5)' }}>ISLANDERS 2025</p>
+        <Image
+          src="/images/dillon-team-pyramid.jpg"
+          alt="Islanders 2025"
+          fill sizes="100vw"
+          // center 45% shows full pyramid — not too high (cuts tops) or low (cuts base)
+          style={{ objectFit: 'cover', objectPosition: 'center 45%' }}
+        />
       </motion.div>
-
-      {/* Narrow editorial text panel */}
-      <motion.div
-        style={{
-          flex: 1,
-          background: '#0A0A0A',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'flex-end',
-          padding: '2rem 1.5rem',
-        }}
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-        transition={{ duration: 1.3, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-      >
-        <p style={{
-          fontFamily: 'var(--font-oswald)',
-          fontWeight: 900,
-          fontSize: 'clamp(2rem, 4vw, 3.5rem)',
-          color: 'transparent',
-          WebkitTextStroke: '1px rgba(255,255,255,0.2)',
-          lineHeight: 0.9,
-          marginBottom: '1.25rem',
-        }}>
-          THE<br />TEAM
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 45%)',
+      }} />
+      <div style={{ position: 'absolute', bottom: '1.5rem', left: '2rem', right: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <p style={{ fontSize: '9px', letterSpacing: '0.32em', color: 'rgba(255,255,255,0.55)' }}>
+          ISLANDERS 2025
         </p>
-        <p style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(255,255,255,0.25)' }}>
-          CORPUS CHRISTI<br />ISLANDERS
+        <p style={{ fontSize: '9px', letterSpacing: '0.32em', color: 'rgba(255,255,255,0.3)' }}>
+          CORPUS CHRISTI
         </p>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   )
 }
 
@@ -148,7 +161,7 @@ export default function GallerySection() {
   return (
     <section id="gallery" ref={headerRef} style={{ background: '#F8F8F5' }}>
 
-      {/* Section label — minimal, floating above the imagery */}
+      {/* Section label */}
       <motion.div
         style={{ padding: '10vh 7vw 4vh', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
         initial={{ opacity: 0 }}
@@ -162,7 +175,7 @@ export default function GallerySection() {
         <span style={{ fontSize: '9px', letterSpacing: '0.3em', color: '#ccc' }}>2024 – 2026</span>
       </motion.div>
 
-      {/* Row 1: Full-bleed portrait — THE BRAND */}
+      {/* Row 1: Full-bleed portrait — THE BRAND (pointing, full body visible at top center) */}
       <div style={{ padding: '0 2px 2px' }}>
         <FullBleedFrame
           src="/images/dillon-studio-pointing.jpg"
@@ -172,28 +185,25 @@ export default function GallerySection() {
         />
       </div>
 
-      {/* Row 2: Split — race energy + relay team */}
+      {/* Row 2: Split — relay team (55%) gets enough width to show all 4 athletes */}
       <div style={{ padding: '2px 2px 0' }}>
-        <SplitFrame
-          left={{ src: '/images/dillon-race.jpg', label: 'Texas Relays · 800M', width: '62%', height: '56vh', pos: 'center 20%' }}
-          right={{ src: '/images/dillon-relay-team.jpg', label: '4×400 · Texas Relays', width: '38%', height: '56vh', pos: 'center' }}
-        />
+        <SplitRow />
       </div>
 
-      {/* Row 3: Full-bleed — confidence */}
+      {/* Row 3: Full-bleed — identity (thumbsup, top center keeps full body) */}
       <div style={{ padding: '2px 2px 0' }}>
         <FullBleedFrame
           src="/images/dillon-studio-thumbsup.jpg"
           label="Ready · 2026"
           height="80vh"
           pos="top center"
-          delay={0}
+          textSide="right"
         />
       </div>
 
-      {/* Row 4: Team frame with editorial text panel */}
+      {/* Row 4: Full-bleed team pyramid — needs full width and enough height */}
       <div style={{ padding: '2px 2px 0' }}>
-        <TeamFrame />
+        <TeamRow />
       </div>
 
       <div style={{ height: '10vh' }} />

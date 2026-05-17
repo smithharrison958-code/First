@@ -27,7 +27,7 @@ export default function VideoSection() {
             alt="Relay team"
             fill
             sizes="100vw"
-            style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+            style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
           />
         </motion.div>
         {/* Heavy dark overlay — editorial, not full black */}

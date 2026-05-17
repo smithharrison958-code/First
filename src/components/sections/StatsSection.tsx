@@ -83,7 +83,7 @@ function RaceInterlude() {
           src="/images/dillon-race.jpg"
           alt="Dillon racing"
           fill sizes="100vw"
-          style={{ objectFit: 'cover', objectPosition: 'center 22%' }}
+          style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
         />
       </motion.div>
       {/* Bleeds into section colour on all sides */}
